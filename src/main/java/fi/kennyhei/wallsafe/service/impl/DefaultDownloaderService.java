@@ -20,12 +20,12 @@ import org.jsoup.select.Elements;
 public class DefaultDownloaderService implements DownloaderService {
 
     private final SettingsService settingsService;
-    private final DesktopService wallpaperChangerService;
+    private final DesktopService desktopService;
 
     public DefaultDownloaderService() {
 
         this.settingsService = new DefaultSettingsService();
-        this.wallpaperChangerService = new DefaultDesktopService();
+        this.desktopService = new DefaultDesktopService();
     }
 
     @Override
@@ -48,7 +48,7 @@ public class DefaultDownloaderService implements DownloaderService {
                 downloadImage(url, path);
 
                 // Set as desktop background
-                wallpaperChangerService.changeWallpaper(path);
+                desktopService.changeWallpaper(path);
 
                 return null;
             }
