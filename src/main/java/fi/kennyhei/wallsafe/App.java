@@ -15,11 +15,11 @@ public class App extends Application {
 
         WallSafeFactory factory = new WallSafeFactory();
         MainController mainController = factory.getMainController();
+
         Scene scene = new Scene(mainController.getView());
-
         scene.getStylesheets().add("/styles/Styles.css");
-        stage.setScene(scene);
 
+        stage.setScene(scene);
         stage.setTitle("WallSafe");
         stage.show();
     }
