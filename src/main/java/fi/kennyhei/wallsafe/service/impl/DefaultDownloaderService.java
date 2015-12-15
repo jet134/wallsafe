@@ -58,23 +58,6 @@ public class DefaultDownloaderService implements DownloaderService {
         thread.start();
     }
 
-    private static String parseFilename(String imageURL) {
-
-        String[] parts = imageURL.split("/");
-        String filename = parts[parts.length - 1];
-
-        parts = filename.split("\\.");
-
-        String extension = parts[1];
-        if (extension.contains("?")) {
-
-            extension = extension.substring(0, extension.indexOf("?"));
-        }
-
-        filename = parts[0] + "." + extension;
-        return filename;
-    }
-
     private static String getRandomImageLink(Document document) throws IOException {
 
         Elements links = document.select("a.preview");
@@ -90,6 +73,23 @@ public class DefaultDownloaderService implements DownloaderService {
         System.out.println(url);
 
         return url;
+    }
+
+    private static String parseFilename(String imageURL) {
+
+        String[] parts = imageURL.split("/");
+        String filename = parts[parts.length - 1];
+
+        parts = filename.split("\\.");
+
+        String extension = parts[1];
+        if (extension.contains("?")) {
+
+            extension = extension.substring(0, extension.indexOf("?"));
+        }
+
+        filename = parts[0] + "." + extension;
+        return filename;
     }
 
     private static void downloadImage(String url, String path) throws IOException {
