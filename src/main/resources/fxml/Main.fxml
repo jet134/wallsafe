@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+
+<?import javafx.collections.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane fx:id="root" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/8.0.40" fx:controller="fi.kennyhei.wallsafe.controller.MainController">
+    <left>
+        <VBox prefHeight="175.0" prefWidth="314.0" spacing="5" BorderPane.alignment="CENTER">
+            <styleClass>
+                <String fx:value="body" />
+            </styleClass>
+
+            <children>
+
+                <Label fx:id="label" layoutX="126" layoutY="120" minHeight="16" minWidth="69" />
+
+                <BorderPane prefHeight="119.0" prefWidth="314.0">
+                    <center>
+                        <Button fx:id="downloadButton" text="Download!" BorderPane.alignment="CENTER" />
+                    </center>
+
+                    <top>
+                        <ComboBox fx:id="resolutionComboBox" prefWidth="140.0" promptText="Choose" BorderPane.alignment="CENTER">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="1024x768"/>
+                                    <String fx:value="1280x800"/>
+                                    <String fx:value="1280x960"/>
+                                    <String fx:value="1440x900"/>
+                                    <String fx:value="1600x900"/>
+                                    <String fx:value="1280x1024"/>
+                                    <String fx:value="1600x1200"/>
+                                    <String fx:value="1920x1080"/>
+                                    <String fx:value="1920x1200"/>
+                                    <String fx:value="2560x1440"/>
+                                    <String fx:value="2560x1600"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+                    </top>
+                </BorderPane>
+            </children>
+        </VBox>
+    </left>
+</BorderPane>

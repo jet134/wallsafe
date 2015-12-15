@@ -1,0 +1,7 @@
+.body {
+    -fx-padding: 20px;
+}
+
+.body .button {
+    -fx-font-weight: bold;
+}
