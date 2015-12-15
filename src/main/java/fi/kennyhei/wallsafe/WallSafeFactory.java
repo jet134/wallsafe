@@ -16,8 +16,8 @@ public class WallSafeFactory {
     private MainController mainController;
 
     /* Services */
-    private DownloaderService downloaderService;
-    private SettingsService settingsService;
+    private static DownloaderService downloaderService;
+    private static SettingsService settingsService;
 
     public MainController getMainController() {
 
@@ -27,9 +27,6 @@ public class WallSafeFactory {
                 FXMLLoader loader = new FXMLLoader();
                 loader.load(getClass().getResourceAsStream("/fxml/Main.fxml"));
                 mainController = (MainController) loader.getController();
-
-                mainController.setDownloaderService(getDownloaderService());
-                mainController.setSettingsService(getSettingsService());
             }
             catch (IOException e)
             {
@@ -40,7 +37,7 @@ public class WallSafeFactory {
         return mainController;
     }
 
-    public DownloaderService getDownloaderService() {
+    public static DownloaderService getDownloaderService() {
 
         if (downloaderService == null) {
             downloaderService = new DefaultDownloaderService();
@@ -49,7 +46,7 @@ public class WallSafeFactory {
         return downloaderService;
     }
 
-    private SettingsService getSettingsService() {
+    public static SettingsService getSettingsService() {
 
         if (settingsService == null) {
             settingsService = new DefaultSettingsService();

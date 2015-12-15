@@ -1,5 +1,6 @@
 package fi.kennyhei.wallsafe.controller;
 
+import fi.kennyhei.wallsafe.WallSafeFactory;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.service.SettingsService;
 
@@ -31,6 +32,14 @@ public class MainController implements Initializable {
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
+        // Setup services
+        setDownloaderService(WallSafeFactory.getDownloaderService());
+        setSettingsService(WallSafeFactory.getSettingsService());
+
+        // Setup event handlers
+        resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
+        downloadButton.setOnAction((ActionEvent event) -> onDownload(event));
+
         // Find out native resolution
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         int width = (int) screenSize.getWidth();
@@ -39,10 +48,6 @@ public class MainController implements Initializable {
         // Set resolution
         String resolution = String.valueOf(width) + "x" + String.valueOf(height);
         resolutionComboBox.getSelectionModel().select(resolution);
-
-        // Setup event handlers
-        resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
-        downloadButton.setOnAction((ActionEvent event) -> onDownload(event));
     }
 
     public Parent getView() {
