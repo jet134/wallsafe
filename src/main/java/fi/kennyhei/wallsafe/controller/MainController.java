@@ -1,6 +1,7 @@
 package fi.kennyhei.wallsafe.controller;
 
 import fi.kennyhei.wallsafe.WallSafeFactory;
+import fi.kennyhei.wallsafe.concurrent.service.ScheduledDesktopService;
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
 import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
@@ -36,6 +37,7 @@ public class MainController implements Initializable {
 
     // Background tasks
     private ScheduledDownloadService scheduledDownloadService;
+    private ScheduledDesktopService scheduledDesktopService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -61,8 +63,15 @@ public class MainController implements Initializable {
         // Initialize background tasks
         this.scheduledDownloadService = new ScheduledDownloadService();
         Duration duration = Duration.seconds(this.scheduledDownloadService.getInterval());
+
         this.scheduledDownloadService.setPeriod(duration);
         this.scheduledDownloadService.start();
+
+        this.scheduledDesktopService = new ScheduledDesktopService();
+        duration = Duration.seconds(this.scheduledDesktopService.getInterval());
+
+        this.scheduledDesktopService.setPeriod(duration);
+        this.scheduledDesktopService.start();
     }
 
     public Parent getView() {

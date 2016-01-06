@@ -1,12 +1,12 @@
 package fi.kennyhei.wallsafe.concurrent.service;
 
 import fi.kennyhei.wallsafe.WallSafeFactory;
-import fi.kennyhei.wallsafe.service.DownloaderService;
+import fi.kennyhei.wallsafe.service.DesktopService;
 
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 
-public class ScheduledDownloadService extends ScheduledService {
+public class ScheduledDesktopService extends ScheduledService {
 
     // Interval in seconds
     private int interval = 60;
@@ -14,14 +14,14 @@ public class ScheduledDownloadService extends ScheduledService {
     @Override
     protected Task createTask() {
 
-        DownloaderService downloaderService = WallSafeFactory.getDownloaderService();
+        DesktopService desktopService = WallSafeFactory.getDesktopService();
 
         return new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
 
-                downloaderService.download();
+                desktopService.changeToLatest();
                 return null;
             }
         };
