@@ -71,6 +71,7 @@ public class MainController implements Initializable {
         duration = Duration.seconds(this.scheduledDesktopService.getInterval());
 
         this.scheduledDesktopService.setPeriod(duration);
+        this.scheduledDesktopService.setDelay(duration);
         this.scheduledDesktopService.start();
     }
 
