@@ -1,10 +1,12 @@
 package fi.kennyhei.wallsafe;
 
 import fi.kennyhei.wallsafe.controller.MainController;
+import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.impl.DefaultDownloaderService;
 import fi.kennyhei.wallsafe.service.impl.DefaultSettingsService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.service.SettingsService;
+import fi.kennyhei.wallsafe.service.impl.DefaultDesktopService;
 
 import java.io.IOException;
 
@@ -16,6 +18,7 @@ public class WallSafeFactory {
     private MainController mainController;
 
     /* Services */
+    private static DesktopService desktopService;
     private static DownloaderService downloaderService;
     private static SettingsService settingsService;
 
@@ -35,6 +38,15 @@ public class WallSafeFactory {
         }
 
         return mainController;
+    }
+
+    public static DesktopService getDesktopService() {
+
+        if (desktopService == null) {
+            desktopService = new DefaultDesktopService();
+        }
+
+        return desktopService;
     }
 
     public static DownloaderService getDownloaderService() {

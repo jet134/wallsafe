@@ -22,6 +22,9 @@ public class DefaultDownloaderService implements DownloaderService {
     private final SettingsService settingsService;
     private final DesktopService desktopService;
 
+    // Name of the latest downloaded file
+    private String latestFilename;
+
     public DefaultDownloaderService() {
 
         this.settingsService = new DefaultSettingsService();
@@ -41,14 +44,12 @@ public class DefaultDownloaderService implements DownloaderService {
 
                 String url = getRandomImageLink(doc);
                 String filename = parseFilename(url);
+                latestFilename = filename;
 
                 String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\" + filename;
                 System.out.println(path);
 
                 downloadImage(url, path);
-
-                // Set as desktop background
-                desktopService.changeWallpaper(path);
 
                 return null;
             }
@@ -57,6 +58,12 @@ public class DefaultDownloaderService implements DownloaderService {
         Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
+    }
+
+    @Override
+    public String getLatestFilename() {
+
+        return this.latestFilename;
     }
 
     private static String getRandomImageLink(Document document) throws IOException {

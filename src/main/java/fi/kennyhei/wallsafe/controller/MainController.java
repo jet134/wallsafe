@@ -1,6 +1,8 @@
 package fi.kennyhei.wallsafe.controller;
 
 import fi.kennyhei.wallsafe.WallSafeFactory;
+import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
+import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.service.SettingsService;
 
@@ -16,6 +18,7 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.layout.BorderPane;
+import javafx.util.Duration;
 
 public class MainController implements Initializable {
 
@@ -26,13 +29,19 @@ public class MainController implements Initializable {
     @FXML private Button downloadButton;
     @FXML private ComboBox<String> resolutionComboBox;
 
+    // Services
+    private DesktopService desktopService;
     private DownloaderService downloaderService;
     private SettingsService settingsService;
+
+    // Background tasks
+    private ScheduledDownloadService scheduledDownloadService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
         // Setup services
+        setDesktopService(WallSafeFactory.getDesktopService());
         setDownloaderService(WallSafeFactory.getDownloaderService());
         setSettingsService(WallSafeFactory.getSettingsService());
 
@@ -48,6 +57,12 @@ public class MainController implements Initializable {
         // Set resolution
         String resolution = String.valueOf(width) + "x" + String.valueOf(height);
         resolutionComboBox.getSelectionModel().select(resolution);
+
+        // Initialize background tasks
+        this.scheduledDownloadService = new ScheduledDownloadService();
+        Duration duration = Duration.seconds(this.scheduledDownloadService.getInterval());
+        this.scheduledDownloadService.setPeriod(duration);
+        this.scheduledDownloadService.start();
     }
 
     public Parent getView() {
@@ -68,7 +83,17 @@ public class MainController implements Initializable {
 
     public void onDownload(ActionEvent event) {
 
+        // Download
         downloaderService.download();
+
+        // Set as desktop background
+        String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\" + downloaderService.getLatestFilename();
+        desktopService.changeWallpaper(path);
+    }
+
+    public void setDesktopService(DesktopService desktopService) {
+
+        this.desktopService = desktopService;
     }
 
     public void setDownloaderService(DownloaderService downloaderService) {
