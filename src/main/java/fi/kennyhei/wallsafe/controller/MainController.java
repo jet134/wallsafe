@@ -87,8 +87,7 @@ public class MainController implements Initializable {
         downloaderService.download();
 
         // Set as desktop background
-        String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\" + downloaderService.getLatestFilename();
-        desktopService.changeWallpaper(path);
+        desktopService.changeWallpaper(downloaderService.getLatestFilename());
     }
 
     public void setDesktopService(DesktopService desktopService) {

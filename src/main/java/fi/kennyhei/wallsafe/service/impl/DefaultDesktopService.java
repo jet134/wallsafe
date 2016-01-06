@@ -7,13 +7,15 @@ import fi.kennyhei.wallsafe.service.DesktopService;
 
 public class DefaultDesktopService implements DesktopService {
 
+    private final String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\";
+
     @Override
-    public void changeWallpaper(String path) {
+    public void changeWallpaper(String filename) {
 
         SPI.INSTANCE.SystemParametersInfo(
                 new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
                 new WinDef.UINT_PTR(0),
-                path,
+                path + filename,
                 new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));
     }
 }
