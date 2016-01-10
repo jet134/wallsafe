@@ -48,6 +48,7 @@ public class DefaultDownloaderService implements DownloaderService {
 
                 String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\" + filename;
                 System.out.println(path);
+                System.out.println();
 
                 downloadImage(url, path);
 

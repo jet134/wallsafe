@@ -12,23 +12,35 @@ import java.awt.Toolkit;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
-import javafx.scene.layout.BorderPane;
-import javafx.util.Duration;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.GridPane;
 
 public class MainController implements Initializable {
 
     // Variables annotated with @FXML have their values injected by FXMLLoader
     @FXML private Parent root;
-    @FXML private BorderPane contentArea;
+    @FXML private GridPane contentArea;
 
-    @FXML private Button downloadButton;
+    // Change interval
+    @FXML private CheckBox changeIntervalCheckBox;
+    @FXML private TextField changeIntervalTextField;
+    @FXML private ComboBox<String> changeIntervalComboBox;
+
+    // Download interval
+    @FXML private CheckBox downloadIntervalCheckBox;
+    @FXML private TextField downloadIntervalTextField;
+    @FXML private ComboBox<String> downloadIntervalComboBox;
+
     @FXML private ComboBox<String> resolutionComboBox;
+    @FXML private Button downloadButton;
 
     // Services
     private DesktopService desktopService;
@@ -48,8 +60,10 @@ public class MainController implements Initializable {
         setSettingsService(WallSafeFactory.getSettingsService());
 
         // Setup event handlers
-        resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
-        downloadButton.setOnAction((ActionEvent event) -> onDownload(event));
+        initializeIntervalHandlers();
+
+        this.resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
+        this.downloadButton.setOnAction((ActionEvent event) -> onDownload(event));
 
         // Find out native resolution
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -58,31 +72,86 @@ public class MainController implements Initializable {
 
         // Set resolution
         String resolution = String.valueOf(width) + "x" + String.valueOf(height);
-        resolutionComboBox.getSelectionModel().select(resolution);
+        this.resolutionComboBox.getSelectionModel().select(resolution);
 
         // Initialize background tasks
         this.scheduledDownloadService = new ScheduledDownloadService();
-        Duration duration = Duration.seconds(this.scheduledDownloadService.getInterval());
-
-        this.scheduledDownloadService.setPeriod(duration);
-        this.scheduledDownloadService.start();
+        this.scheduledDownloadService.initialize();
 
         this.scheduledDesktopService = new ScheduledDesktopService();
-        duration = Duration.seconds(this.scheduledDesktopService.getInterval());
+        this.scheduledDesktopService.initialize();
+    }
 
-        this.scheduledDesktopService.setPeriod(duration);
-        this.scheduledDesktopService.setDelay(duration);
-        this.scheduledDesktopService.start();
+    private void initializeIntervalHandlers() {
+
+        // Change interval handlers
+        this.changeIntervalCheckBox.selectedProperty()
+                                   .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+                                                 onChangeIntervalSelected(newValue));
+
+        this.changeIntervalTextField.textProperty()
+                                    .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
+                                                  onChangeIntervalValue(newValue));
+
+        this.changeIntervalComboBox.setOnAction((ActionEvent event) -> onChangeIntervalTimeUnit(event));
+
+        // Download interval handlers
+        this.downloadIntervalCheckBox.selectedProperty()
+                                   .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
+                                                 onDownloadIntervalSelected(newValue));
+
+        this.downloadIntervalTextField.textProperty()
+                                    .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
+                                                  onDownloadIntervalValue(newValue));
+
+        this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onDownloadIntervalTimeUnit(event));
     }
 
     public Parent getView() {
 
-        return root;
+        return contentArea;
     }
 
-    public void showMainView() {
+    private void onChangeIntervalSelected(Boolean selected) {
 
-        contentArea.setCenter(this.getView());
+        this.scheduledDesktopService.updateState(selected);
+    }
+
+    private void onChangeIntervalValue(String newValue) {
+
+        int interval = Integer.parseInt(newValue);
+        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+
+        this.scheduledDesktopService.updateInterval(interval, timeUnit);
+    }
+
+    private void onChangeIntervalTimeUnit(ActionEvent event) {
+
+        int interval = Integer.parseInt(changeIntervalTextField.getText());
+        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+
+        this.scheduledDesktopService.updateInterval(interval, timeUnit);
+    }
+
+    private void onDownloadIntervalSelected(Boolean selected) {
+
+        this.scheduledDownloadService.updateState(selected);
+    }
+
+    private void onDownloadIntervalValue(String newValue) {
+
+        int interval = Integer.parseInt(newValue);
+        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+
+        this.scheduledDownloadService.updateInterval(interval, timeUnit);
+    }
+
+    private void onDownloadIntervalTimeUnit(ActionEvent event) {
+
+        int interval = Integer.parseInt(changeIntervalTextField.getText());
+        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+
+        this.scheduledDownloadService.updateInterval(interval, timeUnit);
     }
 
     public void onResolution(ActionEvent event) {

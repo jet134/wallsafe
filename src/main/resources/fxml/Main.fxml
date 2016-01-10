@@ -8,32 +8,70 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="root" prefHeight="246.0" prefWidth="363.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.kennyhei.wallsafe.controller.MainController">
-   <center>
-      <GridPane alignment="CENTER" vgap="20.0" BorderPane.alignment="CENTER">
-         <GridPane.margin>
-            <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
-         </GridPane.margin>
-         <children>
-                  <ComboBox fx:id="resolutionComboBox" prefWidth="140.0" promptText="Choose">
-                      <items>
-                          <FXCollections fx:factory="observableArrayList">
-                              <String fx:value="1024x768" />
-                              <String fx:value="1280x800" />
-                              <String fx:value="1280x960" />
-                              <String fx:value="1440x900" />
-                              <String fx:value="1600x900" />
-                              <String fx:value="1280x1024" />
-                              <String fx:value="1600x1200" />
-                              <String fx:value="1920x1080" />
-                              <String fx:value="1920x1200" />
-                              <String fx:value="2560x1440" />
-                              <String fx:value="2560x1600" />
-                          </FXCollections>
-                      </items>
-                  </ComboBox>
-                  <Button fx:id="downloadButton" text="Download!" GridPane.rowIndex="1" />
-         </children>
-      </GridPane>
-   </center>
-</BorderPane>
+<GridPane fx:id="contentArea" alignment="CENTER" hgap="10.0" nodeOrientation="LEFT_TO_RIGHT" prefHeight="375.0" prefWidth="487.0" vgap="20.0" xmlns="http://javafx.com/javafx/8.0.40" xmlns:fx="http://javafx.com/fxml/1" fx:controller="fi.kennyhei.wallsafe.controller.MainController">
+    <padding>
+        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+    </padding>
+
+    <children>
+        <!-- Change interval -->
+        <CheckBox fx:id="changeIntervalCheckBox" mnemonicParsing="false" selected="true" text="Change wallpaper every" GridPane.rowIndex="0" />
+        <TextField fx:id="changeIntervalTextField" text="60" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <ComboBox fx:id="changeIntervalComboBox" prefWidth="140.0" value="seconds" GridPane.columnIndex="2" GridPane.rowIndex="0">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="seconds" />
+                    <String fx:value="minutes" />
+                    <String fx:value="hours" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <!-- Download interval -->
+        <CheckBox fx:id="downloadIntervalCheckBox" mnemonicParsing="false" selected="true" text="Download wallpaper every" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="downloadIntervalTextField" maxWidth="-Infinity" prefHeight="31.0" prefWidth="100.0" text="60" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <ComboBox fx:id="downloadIntervalComboBox" prefWidth="140.0" value="seconds" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="seconds" />
+                    <String fx:value="minutes" />
+                    <String fx:value="hours" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <!-- Set resolution -->
+        <ComboBox fx:id="resolutionComboBox" prefWidth="140.0" promptText="Choose" GridPane.columnIndex="2" GridPane.rowIndex="2">
+            <items>
+                <FXCollections fx:factory="observableArrayList">
+                    <String fx:value="1024x768" />
+                    <String fx:value="1280x800" />
+                    <String fx:value="1280x960" />
+                    <String fx:value="1440x900" />
+                    <String fx:value="1600x900" />
+                    <String fx:value="1280x1024" />
+                    <String fx:value="1600x1200" />
+                    <String fx:value="1920x1080" />
+                    <String fx:value="1920x1200" />
+                    <String fx:value="2560x1440" />
+                    <String fx:value="2560x1600" />
+                </FXCollections>
+            </items>
+        </ComboBox>
+
+        <Button fx:id="downloadButton" text="Download!" GridPane.rowIndex="3" />
+        <Label text="Set resolution:" GridPane.rowIndex="2" />
+    </children>
+
+    <columnConstraints>
+        <ColumnConstraints maxWidth="1.7976931348623157E308" minWidth="96.0" prefWidth="214.0" />
+        <ColumnConstraints maxWidth="1.7976931348623157E308" minWidth="2.0" prefWidth="42.0" />
+        <ColumnConstraints maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="174.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="10.0" prefHeight="50.0" />
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" />
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" />
+        <RowConstraints maxHeight="1.7976931348623157E308" minHeight="-Infinity" prefHeight="50.0" />
+    </rowConstraints>
+</GridPane>
