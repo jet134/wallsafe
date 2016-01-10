@@ -1,8 +1,6 @@
 package fi.kennyhei.wallsafe.controller;
 
 import fi.kennyhei.wallsafe.WallSafeFactory;
-import fi.kennyhei.wallsafe.concurrent.service.ScheduledDesktopService;
-import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
 import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.service.SettingsService;
@@ -47,10 +45,6 @@ public class MainController implements Initializable {
     private DownloaderService downloaderService;
     private SettingsService settingsService;
 
-    // Background tasks
-    private ScheduledDownloadService scheduledDownloadService;
-    private ScheduledDesktopService scheduledDesktopService;
-
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
 
@@ -75,11 +69,8 @@ public class MainController implements Initializable {
         this.resolutionComboBox.getSelectionModel().select(resolution);
 
         // Initialize background tasks
-        this.scheduledDownloadService = new ScheduledDownloadService();
-        this.scheduledDownloadService.initialize();
-
-        this.scheduledDesktopService = new ScheduledDesktopService();
-        this.scheduledDesktopService.initialize();
+        this.downloaderService.start();
+        this.desktopService.start();
     }
 
     private void initializeIntervalHandlers() {
@@ -114,7 +105,7 @@ public class MainController implements Initializable {
 
     private void onChangeIntervalSelected(Boolean selected) {
 
-        this.scheduledDesktopService.updateState(selected);
+        this.desktopService.updateState(selected);
     }
 
     private void onChangeIntervalValue(String newValue) {
@@ -122,7 +113,7 @@ public class MainController implements Initializable {
         int interval = Integer.parseInt(newValue);
         String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
 
-        this.scheduledDesktopService.updateInterval(interval, timeUnit);
+        this.desktopService.updateInterval(interval, timeUnit);
     }
 
     private void onChangeIntervalTimeUnit(ActionEvent event) {
@@ -130,12 +121,12 @@ public class MainController implements Initializable {
         int interval = Integer.parseInt(changeIntervalTextField.getText());
         String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
 
-        this.scheduledDesktopService.updateInterval(interval, timeUnit);
+        this.desktopService.updateInterval(interval, timeUnit);
     }
 
     private void onDownloadIntervalSelected(Boolean selected) {
 
-        this.scheduledDownloadService.updateState(selected);
+        this.downloaderService.updateState(selected);
     }
 
     private void onDownloadIntervalValue(String newValue) {
@@ -143,7 +134,7 @@ public class MainController implements Initializable {
         int interval = Integer.parseInt(newValue);
         String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
 
-        this.scheduledDownloadService.updateInterval(interval, timeUnit);
+        this.downloaderService.updateInterval(interval, timeUnit);
     }
 
     private void onDownloadIntervalTimeUnit(ActionEvent event) {
@@ -151,7 +142,7 @@ public class MainController implements Initializable {
         int interval = Integer.parseInt(changeIntervalTextField.getText());
         String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
 
-        this.scheduledDownloadService.updateInterval(interval, timeUnit);
+        this.downloaderService.updateInterval(interval, timeUnit);
     }
 
     public void onResolution(ActionEvent event) {

@@ -2,16 +2,19 @@ package fi.kennyhei.wallsafe.service.impl;
 
 import com.sun.jna.platform.win32.WinDef;
 
+import fi.kennyhei.wallsafe.concurrent.service.ScheduledDesktopService;
 import fi.kennyhei.wallsafe.util.SPI;
 import fi.kennyhei.wallsafe.service.DesktopService;
 
 import java.io.File;
 import java.util.Arrays;
+import javafx.util.Duration;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 
 public class DefaultDesktopService implements DesktopService {
 
+    private ScheduledDesktopService scheduledDesktopService;
     private final String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\";
 
     @Override
@@ -32,5 +35,50 @@ public class DefaultDesktopService implements DesktopService {
 
         Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
         this.changeWallpaper(wallpapers[0].getName());
+    }
+
+    @Override
+    public void start() {
+
+        this.scheduledDesktopService = new ScheduledDesktopService();
+        Duration duration = Duration.seconds(60);
+
+        this.scheduledDesktopService.setPeriod(duration);
+        this.scheduledDesktopService.setDelay(duration);
+        this.scheduledDesktopService.start();
+    }
+
+    @Override
+    public void updateState(Boolean value) {
+
+        if (value == true) {
+            this.scheduledDesktopService.start();
+        } else {
+            this.scheduledDesktopService.cancel();
+        }
+    }
+
+    @Override
+    public void updateInterval(int interval, String timeUnit) {
+
+        Duration duration = null;
+
+        if (timeUnit.equals("seconds")) {
+            duration = Duration.seconds(interval);
+        }
+
+        if (timeUnit.equals("minutes")) {
+            duration = Duration.minutes(interval);
+        }
+
+        if (timeUnit.equals("hours")) {
+            duration = Duration.hours(interval);
+        }
+
+        this.scheduledDesktopService.setPeriod(duration);
+
+        // Small delay in case if user is still changing the interval value in UI
+        this.scheduledDesktopService.setDelay(Duration.seconds(5));
+        this.scheduledDesktopService.restart();
     }
 }

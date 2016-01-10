@@ -1,5 +1,6 @@
 package fi.kennyhei.wallsafe.service.impl;
 
+import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
 import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.service.SettingsService;
@@ -11,6 +12,7 @@ import java.io.IOException;
 import java.util.Random;
 
 import javafx.concurrent.Task;
+import javafx.util.Duration;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -19,6 +21,7 @@ import org.jsoup.select.Elements;
 
 public class DefaultDownloaderService implements DownloaderService {
 
+    private ScheduledDownloadService scheduledDownloadService;
     private final SettingsService settingsService;
     private final DesktopService desktopService;
 
@@ -108,5 +111,50 @@ public class DefaultDownloaderService implements DownloaderService {
         FileOutputStream fos = new FileOutputStream(new File(path));
         fos.write(bytes);
         fos.close();
+    }
+
+    @Override
+    public void start() {
+
+        this.scheduledDownloadService = new ScheduledDownloadService();
+        Duration duration = Duration.seconds(60);
+
+        this.scheduledDownloadService.setPeriod(duration);
+        this.scheduledDownloadService.setDelay(duration);
+        this.scheduledDownloadService.start();
+    }
+
+    @Override
+    public void updateState(Boolean value) {
+
+        if (value == true) {
+            this.scheduledDownloadService.start();
+        } else {
+            this.scheduledDownloadService.cancel();
+        }
+    }
+
+    @Override
+    public void updateInterval(int interval, String timeUnit) {
+
+        Duration duration = null;
+
+        if (timeUnit.equals("seconds")) {
+            duration = Duration.seconds(interval);
+        }
+
+        if (timeUnit.equals("minutes")) {
+            duration = Duration.minutes(interval);
+        }
+
+        if (timeUnit.equals("hours")) {
+            duration = Duration.hours(interval);
+        }
+
+        this.scheduledDownloadService.setPeriod(duration);
+
+        // Small delay in case if user is still changing the interval value in UI
+        this.scheduledDownloadService.setDelay(Duration.seconds(5));
+        this.scheduledDownloadService.restart();
     }
 }
