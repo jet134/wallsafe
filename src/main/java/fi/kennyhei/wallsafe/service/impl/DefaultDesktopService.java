@@ -17,6 +17,9 @@ public class DefaultDesktopService implements DesktopService {
     private ScheduledDesktopService scheduledDesktopService;
     private final String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\";
 
+    // Index of the current wallpaper
+    private int currentIndex = 0;
+
     @Override
     public void changeWallpaper(String filename) {
 
@@ -28,13 +31,23 @@ public class DefaultDesktopService implements DesktopService {
     }
 
     @Override
-    public void changeToLatest() {
+    public void changeToNext() {
 
         File directory = new File(path);
         File[] wallpapers = directory.listFiles();
 
-        Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_REVERSE);
-        this.changeWallpaper(wallpapers[0].getName());
+        if (wallpapers.length == 0) {
+            return;
+        }
+
+        if (currentIndex >= wallpapers.length) {
+            currentIndex = wallpapers.length - 1;
+        }
+
+        Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+        this.changeWallpaper(wallpapers[currentIndex].getName());
+
+        ++currentIndex;
     }
 
     @Override

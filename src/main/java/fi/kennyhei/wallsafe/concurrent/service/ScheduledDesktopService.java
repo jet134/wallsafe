@@ -18,7 +18,7 @@ public class ScheduledDesktopService extends ScheduledService {
             @Override
             protected Void call() throws Exception {
 
-                desktopService.changeToLatest();
+                desktopService.changeToNext();
                 return null;
             }
         };
