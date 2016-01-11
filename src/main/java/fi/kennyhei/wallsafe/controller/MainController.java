@@ -82,7 +82,7 @@ public class MainController implements Initializable {
 
         this.changeIntervalTextField.textProperty()
                                     .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-                                                  onChangeIntervalValue(newValue));
+                                                  onChangeIntervalValue(oldValue, newValue));
 
         this.changeIntervalComboBox.setOnAction((ActionEvent event) -> onChangeIntervalTimeUnit(event));
 
@@ -93,14 +93,14 @@ public class MainController implements Initializable {
 
         this.downloadIntervalTextField.textProperty()
                                     .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-                                                  onDownloadIntervalValue(newValue));
+                                                  onDownloadIntervalValue(oldValue, newValue));
 
         this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onDownloadIntervalTimeUnit(event));
     }
 
     public Parent getView() {
 
-        return contentArea;
+        return this.contentArea;
     }
 
     private void onChangeIntervalSelected(Boolean selected) {
@@ -108,18 +108,23 @@ public class MainController implements Initializable {
         this.desktopService.updateState(selected);
     }
 
-    private void onChangeIntervalValue(String newValue) {
+    private void onChangeIntervalValue(String oldValue, String newValue) {
+
+        if (!newValue.matches("^-?\\d+$")) {
+            this.changeIntervalTextField.setText(oldValue);
+            return;
+        }
 
         int interval = Integer.parseInt(newValue);
-        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+        String timeUnit = this.changeIntervalComboBox.getSelectionModel().getSelectedItem();
 
         this.desktopService.updateInterval(interval, timeUnit);
     }
 
     private void onChangeIntervalTimeUnit(ActionEvent event) {
 
-        int interval = Integer.parseInt(changeIntervalTextField.getText());
-        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+        int interval = Integer.parseInt(this.changeIntervalTextField.getText());
+        String timeUnit = this.changeIntervalComboBox.getSelectionModel().getSelectedItem();
 
         this.desktopService.updateInterval(interval, timeUnit);
     }
@@ -129,35 +134,40 @@ public class MainController implements Initializable {
         this.downloaderService.updateState(selected);
     }
 
-    private void onDownloadIntervalValue(String newValue) {
+    private void onDownloadIntervalValue(String oldValue, String newValue) {
+
+        if (!newValue.matches("^-?\\d+$")) {
+            this.downloadIntervalTextField.setText(oldValue);
+            return;
+        }
 
         int interval = Integer.parseInt(newValue);
-        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+        String timeUnit = this.downloadIntervalComboBox.getSelectionModel().getSelectedItem();
 
         this.downloaderService.updateInterval(interval, timeUnit);
     }
 
     private void onDownloadIntervalTimeUnit(ActionEvent event) {
 
-        int interval = Integer.parseInt(changeIntervalTextField.getText());
-        String timeUnit = changeIntervalComboBox.getSelectionModel().getSelectedItem();
+        int interval = Integer.parseInt(this.downloadIntervalTextField.getText());
+        String timeUnit = this.downloadIntervalComboBox.getSelectionModel().getSelectedItem();
 
         this.downloaderService.updateInterval(interval, timeUnit);
     }
 
     public void onResolution(ActionEvent event) {
 
-        String resolution = resolutionComboBox.getSelectionModel().getSelectedItem();
-        settingsService.setResolution(resolution);
+        String resolution = this.resolutionComboBox.getSelectionModel().getSelectedItem();
+        this.settingsService.setResolution(resolution);
     }
 
     public void onDownload(ActionEvent event) {
 
         // Download
-        downloaderService.download();
+        this.downloaderService.download();
 
         // Set as desktop background
-        desktopService.changeWallpaper(downloaderService.getLatestFilename());
+        this.desktopService.changeWallpaper(downloaderService.getLatestFilename());
     }
 
     public void setDesktopService(DesktopService desktopService) {
