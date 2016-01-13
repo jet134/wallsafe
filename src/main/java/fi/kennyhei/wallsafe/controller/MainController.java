@@ -78,24 +78,24 @@ public class MainController implements Initializable {
         // Change interval handlers
         this.changeIntervalCheckBox.selectedProperty()
                                    .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-                                                 onChangeIntervalSelected(newValue));
+                                                 onChangeIntervalCheckbox(newValue));
 
         this.changeIntervalTextField.textProperty()
                                     .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-                                                  onChangeIntervalValue(oldValue, newValue));
+                                                  onNumericIntervalValueChange(oldValue, newValue, this.changeIntervalTextField));
 
-        this.changeIntervalComboBox.setOnAction((ActionEvent event) -> onChangeIntervalTimeUnit(event));
+        this.changeIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.changeIntervalComboBox));
 
         // Download interval handlers
         this.downloadIntervalCheckBox.selectedProperty()
                                    .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-                                                 onDownloadIntervalSelected(newValue));
+                                                 onDownloadIntervalCheckbox(newValue));
 
         this.downloadIntervalTextField.textProperty()
                                     .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-                                                  onDownloadIntervalValue(oldValue, newValue));
+                                                  onNumericIntervalValueChange(oldValue, newValue, this.downloadIntervalTextField));
 
-        this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onDownloadIntervalTimeUnit(event));
+        this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.downloadIntervalComboBox));
     }
 
     public Parent getView() {
@@ -103,56 +103,53 @@ public class MainController implements Initializable {
         return this.contentArea;
     }
 
-    private void onChangeIntervalSelected(Boolean selected) {
+    private void onNumericIntervalValueChange(String oldValue, String newValue, TextField intervalTextField) {
+
+        if (!newValue.matches("^-?\\d+$")) {
+            intervalTextField.setText(oldValue);
+            return;
+        }
+
+        int interval = Integer.parseInt(newValue);
+
+        if (intervalTextField.getId().equals("changeIntervalTextField")) {
+
+            String timeUnit = this.changeIntervalComboBox.getSelectionModel().getSelectedItem();
+            this.desktopService.updateInterval(interval, timeUnit);
+        }
+
+        if (intervalTextField.getId().equals("downloadIntervalTextField")) {
+
+            String timeUnit = this.downloadIntervalComboBox.getSelectionModel().getSelectedItem();
+            this.downloaderService.updateInterval(interval, timeUnit);
+        }
+    }
+
+    private void onIntervalTimeUnitChange(ActionEvent event, ComboBox<String> intervalComboBox) {
+
+        String timeUnit = intervalComboBox.getSelectionModel().getSelectedItem();
+
+        if (intervalComboBox.getId().equals("changeIntervalComboBox")) {
+
+            int interval = Integer.parseInt(this.changeIntervalTextField.getText());
+            this.desktopService.updateInterval(interval, timeUnit);
+        }
+
+        if (intervalComboBox.getId().equals("downloadIntervalComboBox")) {
+
+            int interval = Integer.parseInt(this.downloadIntervalTextField.getText());
+            this.downloaderService.updateInterval(interval, timeUnit);
+        }
+    }
+
+    private void onChangeIntervalCheckbox(Boolean selected) {
 
         this.desktopService.updateState(selected);
     }
 
-    private void onChangeIntervalValue(String oldValue, String newValue) {
-
-        if (!newValue.matches("^-?\\d+$")) {
-            this.changeIntervalTextField.setText(oldValue);
-            return;
-        }
-
-        int interval = Integer.parseInt(newValue);
-        String timeUnit = this.changeIntervalComboBox.getSelectionModel().getSelectedItem();
-
-        this.desktopService.updateInterval(interval, timeUnit);
-    }
-
-    private void onChangeIntervalTimeUnit(ActionEvent event) {
-
-        int interval = Integer.parseInt(this.changeIntervalTextField.getText());
-        String timeUnit = this.changeIntervalComboBox.getSelectionModel().getSelectedItem();
-
-        this.desktopService.updateInterval(interval, timeUnit);
-    }
-
-    private void onDownloadIntervalSelected(Boolean selected) {
+    private void onDownloadIntervalCheckbox(Boolean selected) {
 
         this.downloaderService.updateState(selected);
-    }
-
-    private void onDownloadIntervalValue(String oldValue, String newValue) {
-
-        if (!newValue.matches("^-?\\d+$")) {
-            this.downloadIntervalTextField.setText(oldValue);
-            return;
-        }
-
-        int interval = Integer.parseInt(newValue);
-        String timeUnit = this.downloadIntervalComboBox.getSelectionModel().getSelectedItem();
-
-        this.downloaderService.updateInterval(interval, timeUnit);
-    }
-
-    private void onDownloadIntervalTimeUnit(ActionEvent event) {
-
-        int interval = Integer.parseInt(this.downloadIntervalTextField.getText());
-        String timeUnit = this.downloadIntervalComboBox.getSelectionModel().getSelectedItem();
-
-        this.downloaderService.updateInterval(interval, timeUnit);
     }
 
     public void onResolution(ActionEvent event) {
