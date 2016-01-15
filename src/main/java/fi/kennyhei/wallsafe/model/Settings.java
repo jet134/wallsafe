@@ -1,8 +1,12 @@
 package fi.kennyhei.wallsafe.model;
 
 import java.util.List;
+import java.util.prefs.Preferences;
 
 public class Settings {
+
+    // User preferences stored in registry
+    private final Preferences preferences;
 
     // Settings is a singleton class
     private static Settings instance = null;
@@ -11,7 +15,17 @@ public class Settings {
     private String resolution;
 
     // Tags for searching wallpapers
-    private List<String> tags;
+    private List<String> keywords;
+
+    // Download directory
+    private String directoryPath;
+
+    // Interval settings
+    private int changeIntervalValue;
+    private String changeIntervalTimeunit;
+
+    private int downloadIntervalValue;
+    private String downloadIntervalTimeunit;
 
     // Base URL where wallpapers are downloaded from
     private final String baseURL = "http://alpha.wallhaven.cc/search";
@@ -30,6 +44,13 @@ public class Settings {
 
     protected Settings() {
 
+        // Initialize preferences
+        this.preferences = Preferences.userRoot().node(this.getClass().getName());
+
+        // Load user preferences
+        this.loadPreferences();
+
+        // Build URL where wallpapers are downloaded from
         this.buildURL();
     }
 
@@ -41,17 +62,74 @@ public class Settings {
     public void setResolution(String resolution) {
 
         this.resolution = resolution;
+
+        this.updatePreference("resolution", this.resolution);
         this.buildURL();
     }
 
-    public List<String> getTags() {
+    public List<String> getKeywords() {
 
-        return tags;
+        return keywords;
     }
 
-    public void setTags(List<String> tags) {
+    public void setKeywords(List<String> keywords) {
 
-        this.tags = tags;
+        this.keywords = keywords;
+    }
+
+    public String getDirectoryPath() {
+
+        return directoryPath;
+    }
+
+    public void setDirectoryPath(String directoryPath) {
+
+        this.directoryPath = directoryPath;
+        this.updatePreference("download.directory", this.directoryPath);
+    }
+
+    public int getChangeIntervalValue() {
+
+        return changeIntervalValue;
+    }
+
+    public void setChangeIntervalValue(int changeIntervalValue) {
+
+        this.changeIntervalValue = changeIntervalValue;
+        this.updatePreference("change.interval.value", Integer.toString(this.changeIntervalValue));
+    }
+
+    public String getChangeIntervalTimeunit() {
+
+        return changeIntervalTimeunit;
+    }
+
+    public void setChangeIntervalTimeunit(String changeIntervalTimeunit) {
+
+        this.changeIntervalTimeunit = changeIntervalTimeunit;
+        this.updatePreference("change.interval.timeunit", this.changeIntervalTimeunit);
+    }
+
+    public int getDownloadIntervalValue() {
+
+        return downloadIntervalValue;
+    }
+
+    public void setDownloadIntervalValue(int downloadIntervalValue) {
+
+        this.downloadIntervalValue = downloadIntervalValue;
+        this.updatePreference("download.interval.value", Integer.toString(this.downloadIntervalValue));
+    }
+
+    public String getDownloadIntervalTimeunit() {
+
+        return downloadIntervalTimeunit;
+    }
+
+    public void setDownloadIntervalTimeunit(String downloadIntervalTimeunit) {
+
+        this.downloadIntervalTimeunit = downloadIntervalTimeunit;
+        this.updatePreference("download.interval.timeunit", this.downloadIntervalTimeunit);
     }
 
     public String getURL() {
@@ -73,5 +151,23 @@ public class Settings {
           .append("order=desc");
 
         this.URL = sb.toString();
+    }
+
+    private void loadPreferences() {
+
+        this.changeIntervalValue = Integer.parseInt(preferences.get("change.interval.value", "60"));
+        this.changeIntervalTimeunit = preferences.get("change.interval.timeunit", "seconds");
+
+        this.downloadIntervalValue = Integer.parseInt(preferences.get("download.interval.value", "60"));
+        this.downloadIntervalTimeunit = preferences.get("download.interval.timeunit", "seconds");
+
+        this.resolution = preferences.get("resolution", "1920x1080");
+
+        this.directoryPath = preferences.get("download.directory", System.getProperty("user.home") + "\\Desktop\\Wallpapers");
+    }
+
+    private void updatePreference(String key, String value) {
+
+        this.preferences.put(key, value);
     }
 }

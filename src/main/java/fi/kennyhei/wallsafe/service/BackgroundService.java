@@ -8,5 +8,5 @@ public interface BackgroundService {
 
     public void start();
     public void updateState(Boolean onOff);
-    public void updateInterval(int interval, String timeUnit);
+    public void updateInterval();
 }

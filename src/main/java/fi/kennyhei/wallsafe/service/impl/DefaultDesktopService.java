@@ -5,6 +5,7 @@ import com.sun.jna.platform.win32.WinDef;
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDesktopService;
 import fi.kennyhei.wallsafe.util.SPI;
 import fi.kennyhei.wallsafe.service.DesktopService;
+import fi.kennyhei.wallsafe.service.SettingsService;
 
 import java.io.File;
 import java.util.Arrays;
@@ -15,23 +16,30 @@ import org.apache.commons.io.comparator.LastModifiedFileComparator;
 public class DefaultDesktopService implements DesktopService {
 
     private ScheduledDesktopService scheduledDesktopService;
-    private String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers";
+    private final SettingsService settingsService;
 
     // Index of the current wallpaper
     private int currentIndex = 0;
 
+    public DefaultDesktopService() {
+
+        this.settingsService = new DefaultSettingsService();
+    }
+
     @Override
-    public void changeWallpaper(String filename) {
+    public void changeWallpaper(String path) {
 
         SPI.INSTANCE.SystemParametersInfo(
                 new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
                 new WinDef.UINT_PTR(0),
-                path + "\\" + filename,
+                path,
                 new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));
     }
 
     @Override
     public void changeToNext() {
+
+        String path = this.settingsService.getDirectoryPath();
 
         File directory = new File(path);
         File[] wallpapers = directory.listFiles();
@@ -45,15 +53,16 @@ public class DefaultDesktopService implements DesktopService {
         }
 
         Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
-        this.changeWallpaper(wallpapers[currentIndex].getName());
+        path += "\\" + wallpapers[currentIndex].getName();
+
+        this.changeWallpaper(path);
 
         ++currentIndex;
     }
 
     @Override
-    public void setDirectory(File selectedDirectory) {
+    public void resetIndex() {
 
-        this.path = selectedDirectory.getAbsolutePath();
         this.currentIndex = 0;
     }
 
@@ -61,11 +70,11 @@ public class DefaultDesktopService implements DesktopService {
     public void start() {
 
         this.scheduledDesktopService = new ScheduledDesktopService();
-        Duration duration = Duration.seconds(60);
 
-        this.scheduledDesktopService.setPeriod(duration);
-        this.scheduledDesktopService.setDelay(duration);
-        this.scheduledDesktopService.start();
+        int interval = this.settingsService.getChangeIntervalValue();
+        String timeUnit = this.settingsService.getChangeIntervalTimeunit();
+
+        this.setInterval(interval, timeUnit);
     }
 
     @Override
@@ -79,7 +88,15 @@ public class DefaultDesktopService implements DesktopService {
     }
 
     @Override
-    public void updateInterval(int interval, String timeUnit) {
+    public void updateInterval() {
+
+        int interval = this.settingsService.getChangeIntervalValue();
+        String timeUnit = this.settingsService.getChangeIntervalTimeunit();
+
+        this.setInterval(interval, timeUnit);
+    }
+
+    private void setInterval(int interval, String timeUnit) {
 
         Duration duration = null;
 

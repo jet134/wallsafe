@@ -22,23 +22,23 @@ public class DefaultSettingsService implements SettingsService {
     }
 
     @Override
-    public void addTag(String tag) {
+    public void addKeyword(String keyword) {
 
-        settings.getTags().add(tag);
+        settings.getKeywords().add(keyword);
     }
 
     @Override
-    public void removeTag(String deleteTag) {
+    public void removeKeyword(String keyword) {
 
-        List<String> tags = settings.getTags();
-        Iterator<String> tagsIterator = tags.iterator();
+        List<String> tags = settings.getKeywords();
+        Iterator<String> keywordIterator = tags.iterator();
 
-        while (tagsIterator.hasNext()) {
+        while (keywordIterator.hasNext()) {
 
-            String tag = tagsIterator.next();
+            String value = keywordIterator.next();
 
-            if (tag.equals(deleteTag)) {
-                tagsIterator.remove();
+            if (value.equals(value)) {
+                keywordIterator.remove();
                 break;
             }
         }
@@ -48,5 +48,65 @@ public class DefaultSettingsService implements SettingsService {
     public String URL() {
 
         return settings.getURL();
+    }
+
+    @Override
+    public int getChangeIntervalValue() {
+
+        return settings.getChangeIntervalValue();
+    }
+
+    @Override
+    public void setChangeIntervalValue(int value) {
+
+        settings.setChangeIntervalValue(value);
+    }
+
+    @Override
+    public String getChangeIntervalTimeunit() {
+
+        return settings.getChangeIntervalTimeunit();
+    }
+
+    @Override
+    public void setChangeIntervalTimeunit(String value) {
+
+        settings.setChangeIntervalTimeunit(value);
+    }
+
+    @Override
+    public int getDownloadIntervalValue() {
+
+        return settings.getDownloadIntervalValue();
+    }
+
+    @Override
+    public void setDownloadIntervalValue(int value) {
+
+        settings.setDownloadIntervalValue(value);
+    }
+
+    @Override
+    public String getDownloadIntervalTimeunit() {
+
+        return settings.getDownloadIntervalTimeunit();
+    }
+
+    @Override
+    public void setDownloadIntervalTimeunit(String value) {
+
+        settings.setDownloadIntervalTimeunit(value);
+    }
+
+    @Override
+    public String getDirectoryPath() {
+
+        return settings.getDirectoryPath();
+    }
+
+    @Override
+    public void setDirectoryPath(String selectedDirectory) {
+
+        settings.setDirectoryPath(selectedDirectory);
     }
 }

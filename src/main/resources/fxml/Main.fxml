@@ -62,7 +62,7 @@
 
         <!-- Set download folder -->
         <Label text="Set download folder:" GridPane.rowIndex="3" />
-        <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" prefHeight="31.0" prefWidth="192.0" text="Choose directory..." GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
+        <Button fx:id="chooseDirectoryButton" mnemonicParsing="false" prefHeight="31.0" prefWidth="232.0" text="Choose directory..." GridPane.columnIndex="1" GridPane.columnSpan="2" GridPane.rowIndex="3" />
 
         <Button fx:id="downloadButton" text="Download!" GridPane.rowIndex="4" />
     </children>

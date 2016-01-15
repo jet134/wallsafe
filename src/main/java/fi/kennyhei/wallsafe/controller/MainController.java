@@ -56,10 +56,16 @@ public class MainController implements Initializable {
         setDownloaderService(WallSafeFactory.getDownloaderService());
         setSettingsService(WallSafeFactory.getSettingsService());
 
+        // Setup interval values
+        initializeIntervalValues();
+
         // Setup interval event handlers
         initializeIntervalHandlers();
 
+        String directoryPath = this.settingsService.getDirectoryPath();
+        this.chooseDirectoryButton.setText(directoryPath);
         this.chooseDirectoryButton.setOnAction((ActionEvent event) -> onChooseDirectory(event));
+
         this.resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
         this.downloadButton.setOnAction((ActionEvent event) -> onDownload(event));
 
@@ -75,6 +81,25 @@ public class MainController implements Initializable {
         // Initialize background tasks
         this.downloaderService.start();
         this.desktopService.start();
+    }
+
+    private void initializeIntervalValues() {
+
+        String interval;
+
+        interval = Integer.toString(this.settingsService.getChangeIntervalValue());
+        this.changeIntervalTextField.setText(interval);
+
+        interval = Integer.toString(this.settingsService.getDownloadIntervalValue());
+        this.downloadIntervalTextField.setText(interval);
+
+        String timeUnit;
+
+        timeUnit = this.settingsService.getChangeIntervalTimeunit();
+        this.changeIntervalComboBox.setValue(timeUnit);
+
+        timeUnit = this.settingsService.getDownloadIntervalTimeunit();
+        this.downloadIntervalComboBox.setValue(timeUnit);
     }
 
     private void initializeIntervalHandlers() {
@@ -118,14 +143,14 @@ public class MainController implements Initializable {
 
         if (intervalTextField.getId().equals("changeIntervalTextField")) {
 
-            String timeUnit = this.changeIntervalComboBox.getSelectionModel().getSelectedItem();
-            this.desktopService.updateInterval(interval, timeUnit);
+            this.settingsService.setChangeIntervalValue(interval);
+            this.desktopService.updateInterval();
         }
 
         if (intervalTextField.getId().equals("downloadIntervalTextField")) {
 
-            String timeUnit = this.downloadIntervalComboBox.getSelectionModel().getSelectedItem();
-            this.downloaderService.updateInterval(interval, timeUnit);
+            this.settingsService.setDownloadIntervalValue(interval);
+            this.downloaderService.updateInterval();
         }
     }
 
@@ -135,14 +160,14 @@ public class MainController implements Initializable {
 
         if (intervalComboBox.getId().equals("changeIntervalComboBox")) {
 
-            int interval = Integer.parseInt(this.changeIntervalTextField.getText());
-            this.desktopService.updateInterval(interval, timeUnit);
+            this.settingsService.setChangeIntervalTimeunit(timeUnit);
+            this.desktopService.updateInterval();
         }
 
         if (intervalComboBox.getId().equals("downloadIntervalComboBox")) {
 
-            int interval = Integer.parseInt(this.downloadIntervalTextField.getText());
-            this.downloaderService.updateInterval(interval, timeUnit);
+            this.settingsService.setDownloadIntervalTimeunit(timeUnit);
+            this.downloaderService.updateInterval();
         }
     }
 
@@ -165,8 +190,8 @@ public class MainController implements Initializable {
 
             this.chooseDirectoryButton.setText(selectedDirectory.getAbsolutePath());
 
-            this.downloaderService.setDirectory(selectedDirectory);
-            this.desktopService.setDirectory(selectedDirectory);
+            this.settingsService.setDirectoryPath(selectedDirectory.getAbsolutePath());
+            this.desktopService.resetIndex();
         }
     }
 

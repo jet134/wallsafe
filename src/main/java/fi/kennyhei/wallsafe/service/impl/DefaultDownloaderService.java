@@ -22,7 +22,6 @@ public class DefaultDownloaderService implements DownloaderService {
 
     private ScheduledDownloadService scheduledDownloadService;
     private final SettingsService settingsService;
-    private String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers";
 
     // Name of the latest downloaded file
     private String latestFilename;
@@ -47,9 +46,6 @@ public class DefaultDownloaderService implements DownloaderService {
                 String filename = parseFilename(url);
                 latestFilename = filename;
 
-                System.out.println(path);
-                System.out.println();
-
                 downloadImage(url, filename);
 
                 return null;
@@ -65,12 +61,6 @@ public class DefaultDownloaderService implements DownloaderService {
     public String getLatestFilename() {
 
         return this.latestFilename;
-    }
-
-    @Override
-    public void setDirectory(File selectedDirectory) {
-
-        this.path = selectedDirectory.getAbsolutePath();
     }
 
     private String getRandomImageLink(Document document) throws IOException {
@@ -111,7 +101,10 @@ public class DefaultDownloaderService implements DownloaderService {
 
         byte[] bytes = Jsoup.connect(url).userAgent(Settings.USER_AGENT).ignoreContentType(true).execute().bodyAsBytes();
 
-        String filepath = this.path + "\\" + filename;
+        String filepath = this.settingsService.getDirectoryPath() + "\\" + filename;
+
+        System.out.println(filepath);
+        System.out.println();
 
         FileOutputStream fos = new FileOutputStream(new File(filepath));
         fos.write(bytes);
@@ -122,11 +115,11 @@ public class DefaultDownloaderService implements DownloaderService {
     public void start() {
 
         this.scheduledDownloadService = new ScheduledDownloadService();
-        Duration duration = Duration.seconds(60);
 
-        this.scheduledDownloadService.setPeriod(duration);
-        this.scheduledDownloadService.setDelay(duration);
-        this.scheduledDownloadService.start();
+        int interval = this.settingsService.getDownloadIntervalValue();
+        String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
+
+        this.setInterval(interval, timeUnit);
     }
 
     @Override
@@ -140,7 +133,15 @@ public class DefaultDownloaderService implements DownloaderService {
     }
 
     @Override
-    public void updateInterval(int interval, String timeUnit) {
+    public void updateInterval() {
+
+        int interval = this.settingsService.getChangeIntervalValue();
+        String timeUnit = this.settingsService.getChangeIntervalTimeunit();
+
+        this.setInterval(interval, timeUnit);
+    }
+
+    private void setInterval(int interval, String timeUnit) {
 
         Duration duration = null;
 
