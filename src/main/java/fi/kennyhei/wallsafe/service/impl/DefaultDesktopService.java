@@ -15,7 +15,7 @@ import org.apache.commons.io.comparator.LastModifiedFileComparator;
 public class DefaultDesktopService implements DesktopService {
 
     private ScheduledDesktopService scheduledDesktopService;
-    private final String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\";
+    private String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers";
 
     // Index of the current wallpaper
     private int currentIndex = 0;
@@ -26,7 +26,7 @@ public class DefaultDesktopService implements DesktopService {
         SPI.INSTANCE.SystemParametersInfo(
                 new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
                 new WinDef.UINT_PTR(0),
-                path + filename,
+                path + "\\" + filename,
                 new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));
     }
 
@@ -48,6 +48,13 @@ public class DefaultDesktopService implements DesktopService {
         this.changeWallpaper(wallpapers[currentIndex].getName());
 
         ++currentIndex;
+    }
+
+    @Override
+    public void setDirectory(File selectedDirectory) {
+
+        this.path = selectedDirectory.getAbsolutePath();
+        this.currentIndex = 0;
     }
 
     @Override

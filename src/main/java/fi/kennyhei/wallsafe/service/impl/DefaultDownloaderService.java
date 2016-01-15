@@ -1,7 +1,6 @@
 package fi.kennyhei.wallsafe.service.impl;
 
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
-import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.service.SettingsService;
 import fi.kennyhei.wallsafe.model.Settings;
@@ -23,7 +22,7 @@ public class DefaultDownloaderService implements DownloaderService {
 
     private ScheduledDownloadService scheduledDownloadService;
     private final SettingsService settingsService;
-    private final DesktopService desktopService;
+    private String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers";
 
     // Name of the latest downloaded file
     private String latestFilename;
@@ -31,7 +30,6 @@ public class DefaultDownloaderService implements DownloaderService {
     public DefaultDownloaderService() {
 
         this.settingsService = new DefaultSettingsService();
-        this.desktopService = new DefaultDesktopService();
     }
 
     @Override
@@ -49,11 +47,10 @@ public class DefaultDownloaderService implements DownloaderService {
                 String filename = parseFilename(url);
                 latestFilename = filename;
 
-                String path = System.getProperty("user.home") + "\\Desktop\\Wallpapers\\" + filename;
                 System.out.println(path);
                 System.out.println();
 
-                downloadImage(url, path);
+                downloadImage(url, filename);
 
                 return null;
             }
@@ -70,7 +67,13 @@ public class DefaultDownloaderService implements DownloaderService {
         return this.latestFilename;
     }
 
-    private static String getRandomImageLink(Document document) throws IOException {
+    @Override
+    public void setDirectory(File selectedDirectory) {
+
+        this.path = selectedDirectory.getAbsolutePath();
+    }
+
+    private String getRandomImageLink(Document document) throws IOException {
 
         Elements links = document.select("a.preview");
         Random r = new Random();
@@ -87,7 +90,7 @@ public class DefaultDownloaderService implements DownloaderService {
         return url;
     }
 
-    private static String parseFilename(String imageURL) {
+    private String parseFilename(String imageURL) {
 
         String[] parts = imageURL.split("/");
         String filename = parts[parts.length - 1];
@@ -104,11 +107,13 @@ public class DefaultDownloaderService implements DownloaderService {
         return filename;
     }
 
-    private static void downloadImage(String url, String path) throws IOException {
+    private void downloadImage(String url, String filename) throws IOException {
 
         byte[] bytes = Jsoup.connect(url).userAgent(Settings.USER_AGENT).ignoreContentType(true).execute().bodyAsBytes();
 
-        FileOutputStream fos = new FileOutputStream(new File(path));
+        String filepath = this.path + "\\" + filename;
+
+        FileOutputStream fos = new FileOutputStream(new File(filepath));
         fos.write(bytes);
         fos.close();
     }

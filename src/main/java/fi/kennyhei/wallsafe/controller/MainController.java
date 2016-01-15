@@ -7,6 +7,7 @@ import fi.kennyhei.wallsafe.service.SettingsService;
 
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -20,6 +21,7 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.stage.DirectoryChooser;
 
 public class MainController implements Initializable {
 
@@ -37,6 +39,7 @@ public class MainController implements Initializable {
     @FXML private TextField downloadIntervalTextField;
     @FXML private ComboBox<String> downloadIntervalComboBox;
 
+    @FXML private Button chooseDirectoryButton;
     @FXML private ComboBox<String> resolutionComboBox;
     @FXML private Button downloadButton;
 
@@ -53,9 +56,10 @@ public class MainController implements Initializable {
         setDownloaderService(WallSafeFactory.getDownloaderService());
         setSettingsService(WallSafeFactory.getSettingsService());
 
-        // Setup event handlers
+        // Setup interval event handlers
         initializeIntervalHandlers();
 
+        this.chooseDirectoryButton.setOnAction((ActionEvent event) -> onChooseDirectory(event));
         this.resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
         this.downloadButton.setOnAction((ActionEvent event) -> onDownload(event));
 
@@ -150,6 +154,20 @@ public class MainController implements Initializable {
     private void onDownloadIntervalCheckbox(Boolean selected) {
 
         this.downloaderService.updateState(selected);
+    }
+
+    public void onChooseDirectory(ActionEvent event) {
+
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        File selectedDirectory = directoryChooser.showDialog(null);
+
+        if (selectedDirectory != null) {
+
+            this.chooseDirectoryButton.setText(selectedDirectory.getAbsolutePath());
+
+            this.downloaderService.setDirectory(selectedDirectory);
+            this.desktopService.setDirectory(selectedDirectory);
+        }
     }
 
     public void onResolution(ActionEvent event) {
