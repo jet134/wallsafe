@@ -8,10 +8,12 @@ import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.SettingsService;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.util.Arrays;
 import javafx.util.Duration;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public class DefaultDesktopService implements DesktopService {
 
@@ -40,7 +42,9 @@ public class DefaultDesktopService implements DesktopService {
         int index = this.settingsService.getIndexOfCurrentWallpaper();
 
         File directory = new File(path);
-        File[] wallpapers = directory.listFiles();
+
+        FileFilter fileFilter = new WildcardFileFilter("wallhaven-*");
+        File[] wallpapers = directory.listFiles(fileFilter);
 
         if (wallpapers.length == 0) {
             return;
