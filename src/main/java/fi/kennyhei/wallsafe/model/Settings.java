@@ -27,6 +27,9 @@ public class Settings {
     private int downloadIntervalValue;
     private String downloadIntervalTimeunit;
 
+    // Index of current wallpaper
+    private int indexOfCurrentWallpaper;
+
     // Base URL where wallpapers are downloaded from
     private final String baseURL = "http://alpha.wallhaven.cc/search";
     private String URL;
@@ -132,6 +135,17 @@ public class Settings {
         this.updatePreference("download.interval.timeunit", this.downloadIntervalTimeunit);
     }
 
+    public int getIndexOfCurrentWallpaper() {
+
+        return indexOfCurrentWallpaper;
+    }
+
+    public void setIndexOfCurrentWallpaper(int indexOfCurrentWallpaper) {
+
+        this.indexOfCurrentWallpaper = indexOfCurrentWallpaper;
+        this.updatePreference("current.wallpaper.index", Integer.toString(this.indexOfCurrentWallpaper));
+    }
+
     public String getURL() {
 
         return URL;
@@ -164,6 +178,8 @@ public class Settings {
         this.resolution = preferences.get("resolution", "1920x1080");
 
         this.directoryPath = preferences.get("download.directory", System.getProperty("user.home") + "\\Desktop\\Wallpapers");
+
+        this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get("current.wallpaper.index", "0"));
     }
 
     private void updatePreference(String key, String value) {

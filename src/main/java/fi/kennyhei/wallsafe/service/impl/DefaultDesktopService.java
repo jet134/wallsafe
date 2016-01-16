@@ -18,9 +18,6 @@ public class DefaultDesktopService implements DesktopService {
     private ScheduledDesktopService scheduledDesktopService;
     private final SettingsService settingsService;
 
-    // Index of the current wallpaper
-    private int currentIndex = 0;
-
     public DefaultDesktopService() {
 
         this.settingsService = new DefaultSettingsService();
@@ -40,6 +37,7 @@ public class DefaultDesktopService implements DesktopService {
     public void changeToNext() {
 
         String path = this.settingsService.getDirectoryPath();
+        int index = this.settingsService.getIndexOfCurrentWallpaper();
 
         File directory = new File(path);
         File[] wallpapers = directory.listFiles();
@@ -48,22 +46,23 @@ public class DefaultDesktopService implements DesktopService {
             return;
         }
 
-        if (currentIndex >= wallpapers.length) {
-            currentIndex = wallpapers.length - 1;
+        if (index >= wallpapers.length) {
+            index = 0;
         }
 
         Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
-        path += "\\" + wallpapers[currentIndex].getName();
+        path += "\\" + wallpapers[index].getName();
 
         this.changeWallpaper(path);
 
-        ++currentIndex;
+        ++index;
+        this.settingsService.setIndexOfCurrentWallpaper(index);
     }
 
     @Override
     public void resetIndex() {
 
-        this.currentIndex = 0;
+        this.settingsService.setIndexOfCurrentWallpaper(0);
     }
 
     @Override

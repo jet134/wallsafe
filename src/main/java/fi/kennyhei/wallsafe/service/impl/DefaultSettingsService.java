@@ -109,4 +109,16 @@ public class DefaultSettingsService implements SettingsService {
 
         settings.setDirectoryPath(selectedDirectory);
     }
+
+    @Override
+    public int getIndexOfCurrentWallpaper() {
+
+        return settings.getIndexOfCurrentWallpaper();
+    }
+
+    @Override
+    public void setIndexOfCurrentWallpaper(int value) {
+
+        settings.setIndexOfCurrentWallpaper(value);
+    }
 }

@@ -22,4 +22,7 @@ public interface SettingsService {
 
     public String getDirectoryPath();
     public void setDirectoryPath(String selectedDirectory);
+
+    public int getIndexOfCurrentWallpaper();
+    public void setIndexOfCurrentWallpaper(int value);
 }
