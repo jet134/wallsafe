@@ -184,6 +184,10 @@ public class MainController implements Initializable {
     public void onChooseDirectory(ActionEvent event) {
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
+
+        File currentDirectory = new File(this.settingsService.getDirectoryPath());
+        directoryChooser.setInitialDirectory(currentDirectory);
+
         File selectedDirectory = directoryChooser.showDialog(null);
 
         if (selectedDirectory != null) {
