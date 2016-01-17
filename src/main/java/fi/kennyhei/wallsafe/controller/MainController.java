@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.io.File;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ObservableValue;
@@ -19,7 +20,9 @@ import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
 import javafx.stage.DirectoryChooser;
 
@@ -38,6 +41,11 @@ public class MainController implements Initializable {
     @FXML private CheckBox downloadIntervalCheckBox;
     @FXML private TextField downloadIntervalTextField;
     @FXML private ComboBox<String> downloadIntervalComboBox;
+
+    // Keywords
+    @FXML private ListView<String> keywordsListView;
+    @FXML private Button addKeywordButton;
+    @FXML private Button removeKeywordButton;
 
     @FXML private Button chooseDirectoryButton;
     @FXML private ComboBox<String> resolutionComboBox;
@@ -61,6 +69,9 @@ public class MainController implements Initializable {
 
         // Setup interval event handlers
         initializeIntervalHandlers();
+
+        // Setup keywords event handlers
+        initializeKeywordsEventHandlers();
 
         String directoryPath = this.settingsService.getDirectoryPath();
         this.chooseDirectoryButton.setText(directoryPath);
@@ -127,6 +138,12 @@ public class MainController implements Initializable {
         this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.downloadIntervalComboBox));
     }
 
+    private void initializeKeywordsEventHandlers() {
+
+        this.addKeywordButton.setOnAction((ActionEvent event) -> onAddKeyword(event));
+        this.removeKeywordButton.setOnAction((ActionEvent event) -> onRemoveKeyword(event));
+    }
+
     public Parent getView() {
 
         return this.contentArea;
@@ -181,6 +198,12 @@ public class MainController implements Initializable {
         this.downloaderService.updateState(selected);
     }
 
+    public void onResolution(ActionEvent event) {
+
+        String resolution = this.resolutionComboBox.getSelectionModel().getSelectedItem();
+        this.settingsService.setResolution(resolution);
+    }
+
     public void onChooseDirectory(ActionEvent event) {
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -199,10 +222,30 @@ public class MainController implements Initializable {
         }
     }
 
-    public void onResolution(ActionEvent event) {
+    private void onAddKeyword(ActionEvent event) {
 
-        String resolution = this.resolutionComboBox.getSelectionModel().getSelectedItem();
-        this.settingsService.setResolution(resolution);
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setContentText("Add keyword:");
+
+        Optional<String> result = dialog.showAndWait();
+
+        // The Java 8 way to get the response value (with lambda expression).
+        result.ifPresent(keyword -> {
+
+            this.keywordsListView.getItems().add(keyword);
+        });
+    }
+
+    private void onRemoveKeyword(ActionEvent event) {
+
+        int selectedIndex = this.keywordsListView.getSelectionModel().getSelectedIndex();
+
+        if (selectedIndex == -1) {
+            return;
+        }
+
+        this.keywordsListView.getItems().remove(selectedIndex);
+        this.keywordsListView.getSelectionModel().clearSelection();
     }
 
     public void onDownload(ActionEvent event) {
