@@ -1,2 +1,2 @@
 # WallSafe
-Wallpaper downloader for now, automatic wallpaper collector in the future. Inspired by [Variety](http://peterlevi.com/variety/).
+Wallpaper manager developed specifically for Windows. Inspired by [Variety](http://peterlevi.com/variety/).
