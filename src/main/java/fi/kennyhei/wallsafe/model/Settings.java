@@ -16,7 +16,7 @@ public class Settings {
     // Resolution of the wallpaper, defaults to user's native resolution
     private String resolution;
 
-    // Tags for searching wallpapers
+    // Keywords for searching wallpapers
     private List<String> keywords;
 
     // Download directory
@@ -34,7 +34,7 @@ public class Settings {
 
     // Base URL where wallpapers are downloaded from
     private final String baseURL = "http://alpha.wallhaven.cc/search";
-    private String URL;
+    private String url;
 
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
@@ -56,7 +56,7 @@ public class Settings {
         this.loadPreferences();
 
         // Build URL where wallpapers are downloaded from
-        this.buildURL();
+        this.buildUrl();
     }
 
     public String getResolution() {
@@ -69,7 +69,7 @@ public class Settings {
         this.resolution = resolution;
 
         this.updatePreference("resolution", this.resolution);
-        this.buildURL();
+        this.buildUrl();
     }
 
     public List<String> getKeywords() {
@@ -148,12 +148,12 @@ public class Settings {
         this.updatePreference("current.wallpaper.index", Integer.toString(this.indexOfCurrentWallpaper));
     }
 
-    public String getURL() {
+    public String getUrl() {
 
-        return URL;
+        return url;
     }
 
-    public void buildURL(String keyword) {
+    public void buildUrl(String keyword) {
 
         StringBuilder sb = new StringBuilder(baseURL);
 
@@ -169,10 +169,10 @@ public class Settings {
           .append("sorting=random&")
           .append("order=desc");
 
-        this.URL = sb.toString();
+        this.url = sb.toString();
     }
 
-    public void buildURL() {
+    public void buildUrl() {
 
         StringBuilder sb = new StringBuilder(baseURL);
 
@@ -185,7 +185,7 @@ public class Settings {
           .append("sorting=random&")
           .append("order=desc");
 
-        this.URL = sb.toString();
+        this.url = sb.toString();
     }
 
     private void loadPreferences() {

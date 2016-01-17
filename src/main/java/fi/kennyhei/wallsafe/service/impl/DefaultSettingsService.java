@@ -65,19 +65,19 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public void buildUrl() {
 
-        settings.buildURL();
+        settings.buildUrl();
     }
 
     @Override
     public void buildUrl(String keyword) {
 
-        settings.buildURL(keyword);
+        settings.buildUrl(keyword);
     }
 
     @Override
     public String url() {
 
-        return settings.getURL();
+        return settings.getUrl();
     }
 
     @Override
