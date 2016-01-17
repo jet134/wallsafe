@@ -153,7 +153,26 @@ public class Settings {
         return URL;
     }
 
-    private void buildURL() {
+    public void buildURL(String keyword) {
+
+        StringBuilder sb = new StringBuilder(baseURL);
+
+        sb.append("?")
+          .append("q=")
+          .append(keyword)
+          .append("&")
+          .append("categories=101&")
+          .append("purity=101&")
+          .append("resolutions=")
+          .append(resolution)
+          .append("&")
+          .append("sorting=random&")
+          .append("order=desc");
+
+        this.URL = sb.toString();
+    }
+
+    public void buildURL() {
 
         StringBuilder sb = new StringBuilder(baseURL);
 

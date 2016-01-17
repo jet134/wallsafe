@@ -34,13 +34,17 @@ public class DefaultDownloaderService implements DownloaderService {
     @Override
     public void download() {
 
+        // TODO: Add option for user to use keywords or download a completely random image
+        String keyword = this.settingsService.getRandomKeyword();
+        this.settingsService.buildUrl(keyword);
+
         Task<Void> task = new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
 
-                System.out.println(settingsService.URL());
-                Document doc = Jsoup.connect(settingsService.URL()).userAgent(Settings.USER_AGENT).get();
+                System.out.println(settingsService.url());
+                Document doc = Jsoup.connect(settingsService.url()).userAgent(Settings.USER_AGENT).get();
 
                 String url = getRandomImageLink(doc);
                 String filename = parseFilename(url);

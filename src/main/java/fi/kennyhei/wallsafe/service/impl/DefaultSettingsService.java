@@ -5,6 +5,7 @@ import fi.kennyhei.wallsafe.model.Settings;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Random;
 
 public class DefaultSettingsService implements SettingsService {
 
@@ -45,7 +46,30 @@ public class DefaultSettingsService implements SettingsService {
     }
 
     @Override
-    public String URL() {
+    public String getRandomKeyword() {
+
+        Random r = new Random();
+
+        List<String> keywords = settings.getKeywords();
+        int index = r.nextInt(keywords.size());
+
+        return keywords.get(index);
+    }
+
+    @Override
+    public void buildUrl() {
+
+        settings.buildURL();
+    }
+
+    @Override
+    public void buildUrl(String keyword) {
+
+        settings.buildURL(keyword);
+    }
+
+    @Override
+    public String url() {
 
         return settings.getURL();
     }
