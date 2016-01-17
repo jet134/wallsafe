@@ -33,7 +33,7 @@ public class Settings {
     private int indexOfCurrentWallpaper;
 
     // Base URL where wallpapers are downloaded from
-    private final String baseURL = "http://alpha.wallhaven.cc/search";
+    private final String baseUrl = "http://alpha.wallhaven.cc/search";
     private String url;
 
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
@@ -155,7 +155,7 @@ public class Settings {
 
     public void buildUrl(String keyword) {
 
-        StringBuilder sb = new StringBuilder(baseURL);
+        StringBuilder sb = new StringBuilder(baseUrl);
 
         sb.append("?")
           .append("q=")
@@ -174,7 +174,7 @@ public class Settings {
 
     public void buildUrl() {
 
-        StringBuilder sb = new StringBuilder(baseURL);
+        StringBuilder sb = new StringBuilder(baseUrl);
 
         sb.append("?")
           .append("categories=101&")
