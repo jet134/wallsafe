@@ -23,9 +23,6 @@ public class DefaultDownloaderService implements DownloaderService {
     private ScheduledDownloadService scheduledDownloadService;
     private final SettingsService settingsService;
 
-    // Name of the latest downloaded file
-    private String latestFilename;
-
     public DefaultDownloaderService() {
 
         this.settingsService = new DefaultSettingsService();
@@ -48,7 +45,6 @@ public class DefaultDownloaderService implements DownloaderService {
 
                 String url = getRandomImageLink(doc);
                 String filename = parseFilename(url);
-                latestFilename = filename;
 
                 downloadImage(url, filename);
 
@@ -59,12 +55,6 @@ public class DefaultDownloaderService implements DownloaderService {
         Thread thread = new Thread(task);
         thread.setDaemon(true);
         thread.start();
-    }
-
-    @Override
-    public String getLatestFilename() {
-
-        return this.latestFilename;
     }
 
     private String getRandomImageLink(Document document) throws IOException {

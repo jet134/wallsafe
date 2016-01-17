@@ -38,7 +38,7 @@ public class DefaultSettingsService implements SettingsService {
 
             String value = keywordIterator.next();
 
-            if (value.equals(value)) {
+            if (value.equals(keyword)) {
                 keywordIterator.remove();
                 break;
             }

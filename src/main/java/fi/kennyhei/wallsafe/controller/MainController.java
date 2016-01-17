@@ -257,8 +257,8 @@ public class MainController implements Initializable {
         // Download
         this.downloaderService.download();
 
-        // Set as desktop background
-        this.desktopService.changeWallpaper(downloaderService.getLatestFilename());
+        // Set desktop background
+        this.desktopService.changeToNext();
     }
 
     public void setDesktopService(DesktopService desktopService) {
