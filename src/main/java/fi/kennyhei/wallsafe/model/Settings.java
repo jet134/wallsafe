@@ -7,6 +7,22 @@ import java.util.prefs.Preferences;
 
 public class Settings {
 
+    // Preference keys
+    private static final String WS_CHANGE_INTERVAL_VALUE = "change.interval.value";
+    private static final String WS_CHANGE_INTERVAL_TIMEUNIT = "change.interval.timeunit";
+
+    private static final String WS_DOWNLOAD_INTERVAL_VALUE = "download.interval.value";
+    private static final String WS_DOWNLOAD_INTERVAL_TIMEUNIT = "download.interval.timeunit";
+
+    private static final String WS_RESOLUTION = "resolution";
+    private static final String WS_DOWNLOAD_DIRECTORY = "download.directory";
+
+    private static final String WS_CURRENT_WALLPAPER_INDEX = "current.wallpaper.index";
+    private static final String WS_KEYWORDS = "keywords";
+
+    // User-Agent header
+    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
+
     // User preferences stored in registry
     private final Preferences preferences;
 
@@ -35,8 +51,6 @@ public class Settings {
     // Base URL where wallpapers are downloaded from
     private final String baseUrl = "http://alpha.wallhaven.cc/search";
     private String url;
-
-    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
     public static Settings getInstance() {
 
@@ -68,7 +82,7 @@ public class Settings {
 
         this.resolution = resolution;
 
-        this.updatePreference("resolution", this.resolution);
+        this.updatePreference(WS_RESOLUTION, resolution);
         this.buildUrl();
     }
 
@@ -90,7 +104,7 @@ public class Settings {
     public void setDirectoryPath(String directoryPath) {
 
         this.directoryPath = directoryPath;
-        this.updatePreference("download.directory", this.directoryPath);
+        this.updatePreference(WS_DOWNLOAD_DIRECTORY, directoryPath);
     }
 
     public int getChangeIntervalValue() {
@@ -101,7 +115,7 @@ public class Settings {
     public void setChangeIntervalValue(int changeIntervalValue) {
 
         this.changeIntervalValue = changeIntervalValue;
-        this.updatePreference("change.interval.value", Integer.toString(this.changeIntervalValue));
+        this.updatePreference(WS_CHANGE_INTERVAL_VALUE, Integer.toString(changeIntervalValue));
     }
 
     public String getChangeIntervalTimeunit() {
@@ -112,7 +126,7 @@ public class Settings {
     public void setChangeIntervalTimeunit(String changeIntervalTimeunit) {
 
         this.changeIntervalTimeunit = changeIntervalTimeunit;
-        this.updatePreference("change.interval.timeunit", this.changeIntervalTimeunit);
+        this.updatePreference(WS_CHANGE_INTERVAL_TIMEUNIT, changeIntervalTimeunit);
     }
 
     public int getDownloadIntervalValue() {
@@ -123,7 +137,7 @@ public class Settings {
     public void setDownloadIntervalValue(int downloadIntervalValue) {
 
         this.downloadIntervalValue = downloadIntervalValue;
-        this.updatePreference("download.interval.value", Integer.toString(this.downloadIntervalValue));
+        this.updatePreference(WS_DOWNLOAD_INTERVAL_VALUE, Integer.toString(downloadIntervalValue));
     }
 
     public String getDownloadIntervalTimeunit() {
@@ -134,7 +148,7 @@ public class Settings {
     public void setDownloadIntervalTimeunit(String downloadIntervalTimeunit) {
 
         this.downloadIntervalTimeunit = downloadIntervalTimeunit;
-        this.updatePreference("download.interval.timeunit", this.downloadIntervalTimeunit);
+        this.updatePreference(WS_DOWNLOAD_INTERVAL_TIMEUNIT, downloadIntervalTimeunit);
     }
 
     public int getIndexOfCurrentWallpaper() {
@@ -145,7 +159,7 @@ public class Settings {
     public void setIndexOfCurrentWallpaper(int indexOfCurrentWallpaper) {
 
         this.indexOfCurrentWallpaper = indexOfCurrentWallpaper;
-        this.updatePreference("current.wallpaper.index", Integer.toString(this.indexOfCurrentWallpaper));
+        this.updatePreference(WS_CURRENT_WALLPAPER_INDEX, Integer.toString(indexOfCurrentWallpaper));
     }
 
     public String getUrl() {
@@ -190,19 +204,17 @@ public class Settings {
 
     private void loadPreferences() {
 
-        this.changeIntervalValue = Integer.parseInt(preferences.get("change.interval.value", "60"));
-        this.changeIntervalTimeunit = preferences.get("change.interval.timeunit", "seconds");
+        this.changeIntervalValue = Integer.parseInt(preferences.get(WS_CHANGE_INTERVAL_VALUE, "60"));
+        this.changeIntervalTimeunit = preferences.get(WS_CHANGE_INTERVAL_TIMEUNIT, "seconds");
 
-        this.downloadIntervalValue = Integer.parseInt(preferences.get("download.interval.value", "60"));
-        this.downloadIntervalTimeunit = preferences.get("download.interval.timeunit", "seconds");
+        this.downloadIntervalValue = Integer.parseInt(preferences.get(WS_DOWNLOAD_INTERVAL_VALUE, "60"));
+        this.downloadIntervalTimeunit = preferences.get(WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
 
-        this.resolution = preferences.get("resolution", "1920x1080");
+        this.resolution = preferences.get(WS_RESOLUTION, "1920x1080");
+        this.directoryPath = preferences.get(WS_DOWNLOAD_DIRECTORY, System.getProperty("user.home") + "\\Desktop\\Wallpapers");
+        this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get(WS_CURRENT_WALLPAPER_INDEX, "0"));
 
-        this.directoryPath = preferences.get("download.directory", System.getProperty("user.home") + "\\Desktop\\Wallpapers");
-
-        this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get("current.wallpaper.index", "0"));
-
-        String[] prefKeywords = preferences.get("keywords", "space,nature,abstract").split(",");
+        String[] prefKeywords = preferences.get(WS_KEYWORDS, "space,nature,abstract").split(",");
         this.keywords = new ArrayList<>(Arrays.asList(prefKeywords));
     }
 
