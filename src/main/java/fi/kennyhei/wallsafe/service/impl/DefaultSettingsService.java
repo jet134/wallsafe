@@ -46,6 +46,12 @@ public class DefaultSettingsService implements SettingsService {
     }
 
     @Override
+    public List<String> getKeywords() {
+
+        return settings.getKeywords();
+    }
+
+    @Override
     public String getRandomKeyword() {
 
         Random r = new Random();

@@ -13,6 +13,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -71,7 +73,7 @@ public class MainController implements Initializable {
         initializeIntervalHandlers();
 
         // Setup keywords event handlers
-        initializeKeywordsEventHandlers();
+        initializeKeywordHandlers();
 
         String directoryPath = this.settingsService.getDirectoryPath();
         this.chooseDirectoryButton.setText(directoryPath);
@@ -138,7 +140,10 @@ public class MainController implements Initializable {
         this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.downloadIntervalComboBox));
     }
 
-    private void initializeKeywordsEventHandlers() {
+    private void initializeKeywordHandlers() {
+
+        ObservableList<String> keywords = FXCollections.observableArrayList(this.settingsService.getKeywords());
+        this.keywordsListView.setItems(keywords);
 
         this.addKeywordButton.setOnAction((ActionEvent event) -> onAddKeyword(event));
         this.removeKeywordButton.setOnAction((ActionEvent event) -> onRemoveKeyword(event));

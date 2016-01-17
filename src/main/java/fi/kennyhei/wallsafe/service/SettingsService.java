@@ -1,5 +1,7 @@
 package fi.kennyhei.wallsafe.service;
 
+import java.util.List;
+
 public interface SettingsService {
 
     public String url();
@@ -10,6 +12,8 @@ public interface SettingsService {
 
     public void addKeyword(String keyword);
     public void removeKeyword(String keyword);
+
+    public List<String> getKeywords();
     public String getRandomKeyword();
 
     public int getChangeIntervalValue();

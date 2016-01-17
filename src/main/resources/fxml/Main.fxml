@@ -75,15 +75,7 @@
             </GridPane.margin>
         </Label>
 
-        <ListView fx:id="keywordsListView" editable="true" prefHeight="210.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5" GridPane.rowSpan="3">
-            <items>
-                <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="space" />
-                    <String fx:value="nature" />
-                    <String fx:value="abstract" />
-                </FXCollections>
-            </items>
-        </ListView>
+        <ListView fx:id="keywordsListView" editable="true" prefHeight="210.0" prefWidth="200.0" GridPane.columnSpan="2" GridPane.rowIndex="5" GridPane.rowSpan="3" />
 
         <Button fx:id="addKeywordButton" mnemonicParsing="false" prefWidth="100.0" text="Add" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="5" />
         <Button fx:id="removeKeywordButton" mnemonicParsing="false" prefWidth="100.0" text="Remove" textAlignment="CENTER" GridPane.columnIndex="2" GridPane.rowIndex="6" />
