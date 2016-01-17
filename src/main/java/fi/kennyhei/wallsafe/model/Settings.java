@@ -1,5 +1,7 @@
 package fi.kennyhei.wallsafe.model;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.prefs.Preferences;
 
@@ -180,6 +182,9 @@ public class Settings {
         this.directoryPath = preferences.get("download.directory", System.getProperty("user.home") + "\\Desktop\\Wallpapers");
 
         this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get("current.wallpaper.index", "0"));
+
+        String[] prefKeywords = preferences.get("keywords", "space,nature,abstract").split(",");
+        this.keywords = new ArrayList<>(Arrays.asList(prefKeywords));
     }
 
     private void updatePreference(String key, String value) {

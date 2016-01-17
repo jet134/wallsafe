@@ -225,6 +225,8 @@ public class MainController implements Initializable {
     private void onAddKeyword(ActionEvent event) {
 
         TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Add keyword");
+        dialog.setHeaderText(null);
         dialog.setContentText("Add keyword:");
 
         Optional<String> result = dialog.showAndWait();
@@ -232,19 +234,21 @@ public class MainController implements Initializable {
         // The Java 8 way to get the response value (with lambda expression).
         result.ifPresent(keyword -> {
 
+            this.settingsService.addKeyword(keyword);
             this.keywordsListView.getItems().add(keyword);
         });
     }
 
     private void onRemoveKeyword(ActionEvent event) {
 
-        int selectedIndex = this.keywordsListView.getSelectionModel().getSelectedIndex();
+        String selectedItem = this.keywordsListView.getSelectionModel().getSelectedItem();
 
-        if (selectedIndex == -1) {
+        if (selectedItem == null) {
             return;
         }
 
-        this.keywordsListView.getItems().remove(selectedIndex);
+        this.settingsService.removeKeyword(selectedItem);
+        this.keywordsListView.getItems().remove(selectedItem);
         this.keywordsListView.getSelectionModel().clearSelection();
     }
 

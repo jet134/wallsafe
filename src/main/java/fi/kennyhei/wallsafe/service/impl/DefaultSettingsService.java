@@ -30,8 +30,8 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public void removeKeyword(String keyword) {
 
-        List<String> tags = settings.getKeywords();
-        Iterator<String> keywordIterator = tags.iterator();
+        List<String> keywords = settings.getKeywords();
+        Iterator<String> keywordIterator = keywords.iterator();
 
         while (keywordIterator.hasNext()) {
 
