@@ -152,7 +152,7 @@ public class DefaultDownloaderService implements DownloaderService {
         }
 
         this.scheduledDownloadService.setPeriod(duration);
-        this.scheduledDownloadService.setDelay(duration);
+        this.scheduledDownloadService.setDelay(duration.add(Duration.seconds(5)));
         this.scheduledDownloadService.restart();
     }
 }

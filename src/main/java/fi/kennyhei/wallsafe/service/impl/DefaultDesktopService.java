@@ -116,7 +116,7 @@ public class DefaultDesktopService implements DesktopService {
         }
 
         this.scheduledDesktopService.setPeriod(duration);
-        this.scheduledDesktopService.setDelay(duration);
+        this.scheduledDesktopService.setDelay(duration.add(Duration.seconds(5)));
         this.scheduledDesktopService.restart();
     }
 }
