@@ -1,5 +1,6 @@
 package fi.kennyhei.wallsafe.model;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -207,7 +208,12 @@ public class Settings {
         this.downloadIntervalTimeunit = preferences.get(WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
 
         this.resolution = preferences.get(WS_RESOLUTION, "1920x1080");
+
         this.directoryPath = preferences.get(WS_DOWNLOAD_DIRECTORY, System.getProperty("user.home") + "\\Desktop\\Wallpapers");
+
+        File downloadDirectory = new File(this.directoryPath);
+        downloadDirectory.mkdirs();
+
         this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get(WS_CURRENT_WALLPAPER_INDEX, "0"));
 
         String[] prefKeywords = preferences.get(WS_KEYWORDS, "space,nature,abstract").split(",");
