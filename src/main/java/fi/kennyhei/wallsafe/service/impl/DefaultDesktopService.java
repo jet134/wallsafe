@@ -116,9 +116,7 @@ public class DefaultDesktopService implements DesktopService {
         }
 
         this.scheduledDesktopService.setPeriod(duration);
-
-        // Small delay in case if user is still changing the interval value in UI
-        this.scheduledDesktopService.setDelay(Duration.seconds(5));
+        this.scheduledDesktopService.setDelay(duration);
         this.scheduledDesktopService.restart();
     }
 }
