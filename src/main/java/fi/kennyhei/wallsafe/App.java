@@ -51,15 +51,14 @@ public class App extends Application {
         stage.show();
     }
 
-    // Sets up a system tray icon for the application.
     private void addAppToTray() {
 
         try {
 
-            // Ensure AWT Toolkit is initialized.
+            // Ensure AWT Toolkit is initialized
             Toolkit.getDefaultToolkit();
 
-            // App requires system tray support, just exit if there is no support.
+            // App requires system tray support, just exit if there is no support
             if (!SystemTray.isSupported()) {
 
                 System.out.println("No system tray support, application exiting.");
@@ -76,8 +75,6 @@ public class App extends Application {
             // If the user double-clicks on the tray icon, show the main app window
             trayIcon.addActionListener(event -> Platform.runLater(this::showStage));
 
-            // If the user selects the default menu item (which includes the app name),
-            // show the main app stage
             MenuItem openItem = new MenuItem("Open WallSafe");
             openItem.addActionListener(event -> Platform.runLater(this::showStage));
 
@@ -114,7 +111,6 @@ public class App extends Application {
         }
     }
 
-    // Shows the application stage and ensures that it is brought to the front of all stages.
     private void showStage() {
 
         if (stage != null) {
