@@ -8,17 +8,17 @@ import java.util.prefs.Preferences;
 public class Settings {
 
     // Preference keys
-    private static final String WS_CHANGE_INTERVAL_VALUE = "change.interval.value";
-    private static final String WS_CHANGE_INTERVAL_TIMEUNIT = "change.interval.timeunit";
+    public static final String WS_CHANGE_INTERVAL_VALUE = "change.interval.value";
+    public static final String WS_CHANGE_INTERVAL_TIMEUNIT = "change.interval.timeunit";
 
-    private static final String WS_DOWNLOAD_INTERVAL_VALUE = "download.interval.value";
-    private static final String WS_DOWNLOAD_INTERVAL_TIMEUNIT = "download.interval.timeunit";
+    public static final String WS_DOWNLOAD_INTERVAL_VALUE = "download.interval.value";
+    public static final String WS_DOWNLOAD_INTERVAL_TIMEUNIT = "download.interval.timeunit";
 
-    private static final String WS_RESOLUTION = "resolution";
-    private static final String WS_DOWNLOAD_DIRECTORY = "download.directory";
+    public static final String WS_RESOLUTION = "resolution";
+    public static final String WS_DOWNLOAD_DIRECTORY = "download.directory";
 
-    private static final String WS_CURRENT_WALLPAPER_INDEX = "current.wallpaper.index";
-    private static final String WS_KEYWORDS = "keywords";
+    public static final String WS_CURRENT_WALLPAPER_INDEX = "current.wallpaper.index";
+    public static final String WS_KEYWORDS = "keywords";
 
     // User-Agent header
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
@@ -81,9 +81,6 @@ public class Settings {
     public void setResolution(String resolution) {
 
         this.resolution = resolution;
-
-        this.updatePreference(WS_RESOLUTION, resolution);
-        this.buildUrl();
     }
 
     public List<String> getKeywords() {
@@ -104,7 +101,6 @@ public class Settings {
     public void setDirectoryPath(String directoryPath) {
 
         this.directoryPath = directoryPath;
-        this.updatePreference(WS_DOWNLOAD_DIRECTORY, directoryPath);
     }
 
     public int getChangeIntervalValue() {
@@ -115,7 +111,6 @@ public class Settings {
     public void setChangeIntervalValue(int changeIntervalValue) {
 
         this.changeIntervalValue = changeIntervalValue;
-        this.updatePreference(WS_CHANGE_INTERVAL_VALUE, Integer.toString(changeIntervalValue));
     }
 
     public String getChangeIntervalTimeunit() {
@@ -126,7 +121,6 @@ public class Settings {
     public void setChangeIntervalTimeunit(String changeIntervalTimeunit) {
 
         this.changeIntervalTimeunit = changeIntervalTimeunit;
-        this.updatePreference(WS_CHANGE_INTERVAL_TIMEUNIT, changeIntervalTimeunit);
     }
 
     public int getDownloadIntervalValue() {
@@ -137,7 +131,6 @@ public class Settings {
     public void setDownloadIntervalValue(int downloadIntervalValue) {
 
         this.downloadIntervalValue = downloadIntervalValue;
-        this.updatePreference(WS_DOWNLOAD_INTERVAL_VALUE, Integer.toString(downloadIntervalValue));
     }
 
     public String getDownloadIntervalTimeunit() {
@@ -148,7 +141,6 @@ public class Settings {
     public void setDownloadIntervalTimeunit(String downloadIntervalTimeunit) {
 
         this.downloadIntervalTimeunit = downloadIntervalTimeunit;
-        this.updatePreference(WS_DOWNLOAD_INTERVAL_TIMEUNIT, downloadIntervalTimeunit);
     }
 
     public int getIndexOfCurrentWallpaper() {
@@ -159,7 +151,11 @@ public class Settings {
     public void setIndexOfCurrentWallpaper(int indexOfCurrentWallpaper) {
 
         this.indexOfCurrentWallpaper = indexOfCurrentWallpaper;
-        this.updatePreference(WS_CURRENT_WALLPAPER_INDEX, Integer.toString(indexOfCurrentWallpaper));
+    }
+
+    public Preferences getPreferences() {
+
+        return preferences;
     }
 
     public String getUrl() {
@@ -216,10 +212,5 @@ public class Settings {
 
         String[] prefKeywords = preferences.get(WS_KEYWORDS, "space,nature,abstract").split(",");
         this.keywords = new ArrayList<>(Arrays.asList(prefKeywords));
-    }
-
-    private void updatePreference(String key, String value) {
-
-        this.preferences.put(key, value);
     }
 }
