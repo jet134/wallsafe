@@ -33,6 +33,7 @@ public class WSSystemTray {
     private final Map<String, MenuItem> menuItems;
 
     public static final String OPEN_ITEM = "open";
+    public static final String DELETE_ITEM = "delete";
     public static final String NEXT_ITEM = "next";
     public static final String EXIT_ITEM = "exit";
 
@@ -66,6 +67,7 @@ public class WSSystemTray {
             trayIcon = new TrayIcon(image);
 
             createOpenItem();
+            createDeleteItem();
             createNextItem();
             createExitItem();
 
@@ -99,6 +101,14 @@ public class WSSystemTray {
         return openItem;
     }
 
+    private MenuItem createDeleteItem() {
+
+        MenuItem deleteItem = new MenuItem("Delete");
+        menuItems.put(DELETE_ITEM, deleteItem);
+
+        return deleteItem;
+    }
+
     private MenuItem createNextItem() {
 
         MenuItem nextItem = new MenuItem("Next");
@@ -122,6 +132,7 @@ public class WSSystemTray {
 
         popup.add(menuItems.get(OPEN_ITEM));
         popup.addSeparator();
+        popup.add(menuItems.get(DELETE_ITEM));
         popup.add(menuItems.get(NEXT_ITEM));
         popup.addSeparator();
         popup.add(menuItems.get(EXIT_ITEM));

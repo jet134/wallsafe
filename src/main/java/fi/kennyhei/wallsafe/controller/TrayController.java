@@ -35,6 +35,10 @@ public class TrayController {
         MenuItem openItem = menuItems.get(WSSystemTray.OPEN_ITEM);
         openItem.addActionListener(event -> Platform.runLater(this::showStage));
 
+        // Delete item
+        MenuItem deleteItem = menuItems.get(WSSystemTray.DELETE_ITEM);
+        deleteItem.addActionListener(event -> onDeleteWallpaper());
+
         // Next item
         MenuItem nextItem = menuItems.get(WSSystemTray.NEXT_ITEM);
         nextItem.addActionListener(event -> onNextWallpaper());
@@ -65,6 +69,11 @@ public class TrayController {
             stage.show();
             stage.toFront();
         }
+    }
+
+    private void onDeleteWallpaper() {
+
+        this.desktopService.deleteWallpaper();
     }
 
     private void onNextWallpaper() {
