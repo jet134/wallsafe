@@ -142,9 +142,9 @@ public class WSSystemTray {
 
         popup.add(menuItems.get(OPEN_ITEM));
         popup.addSeparator();
-        popup.add(menuItems.get(DELETE_ITEM));
         popup.add(menuItems.get(NEXT_ITEM));
         popup.add(menuItems.get(PREVIOUS_ITEM));
+        popup.add(menuItems.get(DELETE_ITEM));
         popup.addSeparator();
         popup.add(menuItems.get(EXIT_ITEM));
 
