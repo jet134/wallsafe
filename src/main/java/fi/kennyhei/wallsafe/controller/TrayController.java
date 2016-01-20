@@ -43,6 +43,10 @@ public class TrayController {
         MenuItem nextItem = menuItems.get(WSSystemTray.NEXT_ITEM);
         nextItem.addActionListener(event -> onNextWallpaper());
 
+        // Previous item
+        MenuItem previousItem = menuItems.get(WSSystemTray.PREVIOUS_ITEM);
+        previousItem.addActionListener(event -> onPreviousWallpaper());
+
         // Exit item
         MenuItem exitItem = menuItems.get(WSSystemTray.EXIT_ITEM);
         SystemTray tray = this.systemTray.getSystemTray();
@@ -79,5 +83,10 @@ public class TrayController {
     private void onNextWallpaper() {
 
         this.desktopService.changeToNext();
+    }
+
+    private void onPreviousWallpaper() {
+
+        this.desktopService.changeToPrevious();
     }
 }

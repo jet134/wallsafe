@@ -1,6 +1,7 @@
 package fi.kennyhei.wallsafe;
 
 import fi.kennyhei.wallsafe.controller.TrayController;
+
 import java.awt.AWTException;
 import java.awt.Font;
 import java.awt.Image;
@@ -16,7 +17,6 @@ import java.util.Map;
 
 import javafx.application.Platform;
 import javafx.stage.Stage;
-
 import javax.imageio.ImageIO;
 
 /* Create system tray UI here and logic is in the TrayController */
@@ -35,6 +35,7 @@ public class WSSystemTray {
     public static final String OPEN_ITEM = "open";
     public static final String DELETE_ITEM = "delete";
     public static final String NEXT_ITEM = "next";
+    public static final String PREVIOUS_ITEM = "previous";
     public static final String EXIT_ITEM = "exit";
 
     private final Stage stage;
@@ -69,6 +70,7 @@ public class WSSystemTray {
             createOpenItem();
             createDeleteItem();
             createNextItem();
+            createPreviousItem();
             createExitItem();
 
             PopupMenu popup = createPopupMenu(menuItems);
@@ -117,6 +119,14 @@ public class WSSystemTray {
         return nextItem;
     }
 
+    private MenuItem createPreviousItem() {
+
+        MenuItem previousItem = new MenuItem("Previous");
+        menuItems.put(PREVIOUS_ITEM, previousItem);
+
+        return previousItem;
+    }
+
     private MenuItem createExitItem() {
 
         MenuItem exitItem = new MenuItem("Exit");
@@ -134,6 +144,7 @@ public class WSSystemTray {
         popup.addSeparator();
         popup.add(menuItems.get(DELETE_ITEM));
         popup.add(menuItems.get(NEXT_ITEM));
+        popup.add(menuItems.get(PREVIOUS_ITEM));
         popup.addSeparator();
         popup.add(menuItems.get(EXIT_ITEM));
 

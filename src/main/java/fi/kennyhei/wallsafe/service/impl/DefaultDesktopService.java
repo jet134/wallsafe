@@ -40,10 +40,20 @@ public class DefaultDesktopService implements DesktopService {
     @Override
     public void changeToNext() {
 
-        String path = this.settingsService.getDirectoryPath();
+        int index = this.settingsService.getIndexOfCurrentWallpaper();
+        this.changeToIndex(index + 1);
+    }
+
+    @Override
+    public void changeToPrevious() {
 
         int index = this.settingsService.getIndexOfCurrentWallpaper();
-        index += 1;
+        this.changeToIndex(index - 1);
+    }
+
+    private void changeToIndex(int index) {
+
+        String path = this.settingsService.getDirectoryPath();
 
         File directory = new File(path);
 
@@ -56,6 +66,10 @@ public class DefaultDesktopService implements DesktopService {
 
         if (index >= wallpapers.length) {
             index = 0;
+        }
+
+        if (index < 0) {
+            index = wallpapers.length - 1;
         }
 
         Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
