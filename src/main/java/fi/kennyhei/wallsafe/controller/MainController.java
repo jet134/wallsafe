@@ -90,6 +90,7 @@ public class MainController implements Initializable {
         // Set resolution
         String resolution = String.valueOf(width) + "x" + String.valueOf(height);
         this.resolutionComboBox.getSelectionModel().select(resolution);
+        this.settingsService.setResolution(resolution);
 
         // Initialize background tasks
         this.downloaderService.start();
