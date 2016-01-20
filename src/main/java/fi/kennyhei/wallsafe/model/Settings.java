@@ -214,7 +214,7 @@ public class Settings {
         File downloadDirectory = new File(this.directoryPath);
         downloadDirectory.mkdirs();
 
-        this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get(WS_CURRENT_WALLPAPER_INDEX, "0"));
+        this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get(WS_CURRENT_WALLPAPER_INDEX, "-1"));
 
         String[] prefKeywords = preferences.get(WS_KEYWORDS, "space,nature,abstract").split(",");
         this.keywords = new ArrayList<>(Arrays.asList(prefKeywords));

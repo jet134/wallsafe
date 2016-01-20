@@ -41,7 +41,9 @@ public class DefaultDesktopService implements DesktopService {
     public void changeToNext() {
 
         String path = this.settingsService.getDirectoryPath();
+
         int index = this.settingsService.getIndexOfCurrentWallpaper();
+        index += 1;
 
         File directory = new File(path);
 
@@ -62,7 +64,6 @@ public class DefaultDesktopService implements DesktopService {
         this.currentFilePath = path;
         this.changeWallpaper(path);
 
-        ++index;
         this.settingsService.setIndexOfCurrentWallpaper(index);
     }
 
