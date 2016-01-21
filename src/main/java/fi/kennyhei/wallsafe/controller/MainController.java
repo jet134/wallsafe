@@ -51,7 +51,6 @@ public class MainController implements Initializable {
 
     @FXML private Button chooseDirectoryButton;
     @FXML private ComboBox<String> resolutionComboBox;
-    @FXML private Button downloadButton;
 
     // Services
     private DesktopService desktopService;
@@ -80,7 +79,6 @@ public class MainController implements Initializable {
         this.chooseDirectoryButton.setOnAction((ActionEvent event) -> onChooseDirectory(event));
 
         this.resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
-        this.downloadButton.setOnAction((ActionEvent event) -> onDownload(event));
 
         // Find out native resolution
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -256,15 +254,6 @@ public class MainController implements Initializable {
         this.settingsService.removeKeyword(selectedItem);
         this.keywordsListView.getItems().remove(selectedItem);
         this.keywordsListView.getSelectionModel().clearSelection();
-    }
-
-    public void onDownload(ActionEvent event) {
-
-        // Download
-        this.downloaderService.download();
-
-        // Set desktop background
-        this.desktopService.changeToNext();
     }
 
     public void setDesktopService(DesktopService desktopService) {
