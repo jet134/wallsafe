@@ -129,8 +129,8 @@ public class DefaultDownloaderService implements DownloaderService {
     @Override
     public void updateInterval() {
 
-        int interval = this.settingsService.getChangeIntervalValue();
-        String timeUnit = this.settingsService.getChangeIntervalTimeunit();
+        int interval = this.settingsService.getDownloadIntervalValue();
+        String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
     }
