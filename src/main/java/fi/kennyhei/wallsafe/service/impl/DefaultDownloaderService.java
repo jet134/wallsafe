@@ -114,6 +114,7 @@ public class DefaultDownloaderService implements DownloaderService {
         String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
+        this.scheduledDownloadService.start();
     }
 
     @Override
@@ -133,6 +134,7 @@ public class DefaultDownloaderService implements DownloaderService {
         String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
+        this.scheduledDownloadService.restart();
     }
 
     private void setInterval(int interval, String timeUnit) {
@@ -153,6 +155,5 @@ public class DefaultDownloaderService implements DownloaderService {
 
         this.scheduledDownloadService.setPeriod(duration);
         this.scheduledDownloadService.setDelay(duration.add(Duration.seconds(5)));
-        this.scheduledDownloadService.restart();
     }
 }

@@ -116,6 +116,7 @@ public class DefaultDesktopService implements DesktopService {
         String timeUnit = this.settingsService.getChangeIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
+        this.scheduledDesktopService.start();
     }
 
     @Override
@@ -135,6 +136,7 @@ public class DefaultDesktopService implements DesktopService {
         String timeUnit = this.settingsService.getChangeIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
+        this.scheduledDesktopService.restart();
     }
 
     private void setInterval(int interval, String timeUnit) {
@@ -155,6 +157,5 @@ public class DefaultDesktopService implements DesktopService {
 
         this.scheduledDesktopService.setPeriod(duration);
         this.scheduledDesktopService.setDelay(duration.add(Duration.seconds(5)));
-        this.scheduledDesktopService.restart();
     }
 }
