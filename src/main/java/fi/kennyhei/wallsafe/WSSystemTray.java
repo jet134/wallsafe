@@ -67,11 +67,11 @@ public class WSSystemTray {
             Image image = ImageIO.read(imageUrl);
             trayIcon = new TrayIcon(image);
 
-            createOpenItem();
-            createDeleteItem();
-            createNextItem();
-            createPreviousItem();
-            createExitItem();
+            createItem(OPEN_ITEM, "Open", true);
+            createItem(NEXT_ITEM, "Next", false);
+            createItem(PREVIOUS_ITEM, "Previous", false);
+            createItem(DELETE_ITEM, "Delete", false);
+            createItem(EXIT_ITEM, "Exit", false);
 
             PopupMenu popup = createPopupMenu(menuItems);
 
@@ -90,49 +90,17 @@ public class WSSystemTray {
         this.trayController = new TrayController(this);
     }
 
-    private MenuItem createOpenItem() {
+    private void createItem(String key, String text, boolean bold) {
 
-        MenuItem openItem = new MenuItem("Open");
+        MenuItem item = new MenuItem(text);
 
-        Font defaultFont = Font.decode(null);
-        Font boldFont = defaultFont.deriveFont(Font.BOLD);
-        openItem.setFont(boldFont);
+        if (bold) {
+            Font defaultFont = Font.decode(null);
+            Font boldFont = defaultFont.deriveFont(Font.BOLD);
+            item.setFont(boldFont);
+        }
 
-        menuItems.put(OPEN_ITEM, openItem);
-
-        return openItem;
-    }
-
-    private MenuItem createDeleteItem() {
-
-        MenuItem deleteItem = new MenuItem("Delete");
-        menuItems.put(DELETE_ITEM, deleteItem);
-
-        return deleteItem;
-    }
-
-    private MenuItem createNextItem() {
-
-        MenuItem nextItem = new MenuItem("Next");
-        menuItems.put(NEXT_ITEM, nextItem);
-
-        return nextItem;
-    }
-
-    private MenuItem createPreviousItem() {
-
-        MenuItem previousItem = new MenuItem("Previous");
-        menuItems.put(PREVIOUS_ITEM, previousItem);
-
-        return previousItem;
-    }
-
-    private MenuItem createExitItem() {
-
-        MenuItem exitItem = new MenuItem("Exit");
-        menuItems.put(EXIT_ITEM, exitItem);
-
-        return exitItem;
+        menuItems.put(key, item);
     }
 
     private PopupMenu createPopupMenu(Map<String, MenuItem> menuItems) {
