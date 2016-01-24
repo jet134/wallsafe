@@ -4,7 +4,6 @@ import fi.kennyhei.wallsafe.service.SettingsService;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
-import javafx.beans.value.ObservableValue;
 import javafx.concurrent.ScheduledService;
 import javafx.util.Duration;
 
@@ -26,7 +25,7 @@ public abstract class AbstractBackgroundService {
 
     private void initializeRunningListener() {
 
-        this.isRunning.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+        this.isRunning.addListener(event -> {
 
             updateState(isRunning());
         });
