@@ -2,6 +2,9 @@ package fi.kennyhei.wallsafe.service.impl;
 
 import fi.kennyhei.wallsafe.service.SettingsService;
 
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
 import javafx.concurrent.ScheduledService;
 import javafx.util.Duration;
 
@@ -10,10 +13,23 @@ public abstract class AbstractBackgroundService {
     protected ScheduledService scheduledService;
     protected SettingsService settingsService;
 
+    protected BooleanProperty isRunning;
+
     public AbstractBackgroundService(ScheduledService scheduledService, SettingsService settingsService) {
 
+        this.isRunning = new SimpleBooleanProperty();
         this.scheduledService = scheduledService;
         this.settingsService = settingsService;
+
+        this.initializeRunningListener();
+    }
+
+    private void initializeRunningListener() {
+
+        this.isRunning.addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) -> {
+
+            updateState(isRunning());
+        });
     }
 
     public abstract void start();
@@ -47,5 +63,23 @@ public abstract class AbstractBackgroundService {
 
         this.scheduledService.setPeriod(duration);
         this.scheduledService.setDelay(duration.add(Duration.seconds(5)));
+    }
+
+     // Define a getter for the property itself
+    public BooleanProperty isRunningProperty() {
+
+        return isRunning;
+    }
+
+   // Define a getter for the property's value
+    protected final boolean isRunning() {
+
+        return isRunning.get();
+    }
+
+    // Define a setter for the property's value
+    protected final void setIsRunning(boolean value){
+
+        isRunning.set(value);
     }
 }

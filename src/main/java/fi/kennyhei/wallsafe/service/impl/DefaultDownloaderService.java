@@ -107,7 +107,8 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
-        this.scheduledService.start();
+        this.scheduledService.restart();
+        this.setIsRunning(true);
     }
 
     @Override

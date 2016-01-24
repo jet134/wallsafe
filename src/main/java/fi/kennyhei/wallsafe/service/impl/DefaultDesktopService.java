@@ -111,7 +111,8 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         String timeUnit = this.settingsService.getChangeIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
-        this.scheduledService.start();
+        this.scheduledService.restart();
+        this.setIsRunning(true);
     }
 
     @Override

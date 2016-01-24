@@ -117,9 +117,8 @@ public class MainController implements Initializable {
     private void initializeIntervalHandlers() {
 
         // Change interval handlers
-        this.changeIntervalCheckBox.selectedProperty()
-                                   .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-                                                 onChangeIntervalCheckbox(newValue));
+        // Use bidirectional binding, if checkbox value is changed, desktop service state is automatically updated and vice versa
+        this.changeIntervalCheckBox.selectedProperty().bindBidirectional(this.desktopService.isRunningProperty());
 
         this.changeIntervalTextField.textProperty()
                                     .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
@@ -128,13 +127,12 @@ public class MainController implements Initializable {
         this.changeIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.changeIntervalComboBox));
 
         // Download interval handlers
-        this.downloadIntervalCheckBox.selectedProperty()
-                                   .addListener((ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) ->
-                                                 onDownloadIntervalCheckbox(newValue));
+        // Use bidirectional binding, if checkbox value is changed, downloader service state is automatically updated and vice versa
+        this.downloadIntervalCheckBox.selectedProperty().bindBidirectional(this.downloaderService.isRunningProperty());
 
         this.downloadIntervalTextField.textProperty()
-                                    .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
-                                                  onNumericIntervalValueChange(oldValue, newValue, this.downloadIntervalTextField));
+                                      .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
+                                                    onNumericIntervalValueChange(oldValue, newValue, this.downloadIntervalTextField));
 
         this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.downloadIntervalComboBox));
     }
@@ -190,16 +188,6 @@ public class MainController implements Initializable {
             this.settingsService.setDownloadIntervalTimeunit(timeUnit);
             this.downloaderService.updateInterval();
         }
-    }
-
-    private void onChangeIntervalCheckbox(Boolean selected) {
-
-        this.desktopService.updateState(selected);
-    }
-
-    private void onDownloadIntervalCheckbox(Boolean selected) {
-
-        this.downloaderService.updateState(selected);
     }
 
     public void onResolution(ActionEvent event) {

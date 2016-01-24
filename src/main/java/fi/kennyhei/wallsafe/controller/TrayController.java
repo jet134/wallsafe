@@ -111,8 +111,9 @@ public class TrayController {
             // thread. Platform.runLater runs the specified code on the Java FX
             // application thread sometime in the future.
             Platform.runLater(() -> {
-                desktopService.updateState(false);
-                downloaderService.updateState(false);
+
+                desktopService.isRunningProperty().set(false);
+                downloaderService.isRunningProperty().set(false);
 
                 playbackItem.setLabel("Play");
             });
@@ -120,8 +121,9 @@ public class TrayController {
         } else if (playbackItem.getLabel().equals("Play")) {
 
             Platform.runLater(() -> {
-                desktopService.updateState(true);
-                downloaderService.updateState(true);
+
+                desktopService.isRunningProperty().set(true);
+                downloaderService.isRunningProperty().set(true);
 
                 playbackItem.setLabel("Pause");
             });
