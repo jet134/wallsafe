@@ -2,7 +2,6 @@ package fi.kennyhei.wallsafe.service.impl;
 
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
-import fi.kennyhei.wallsafe.service.SettingsService;
 import fi.kennyhei.wallsafe.model.Settings;
 
 import java.io.File;
@@ -11,21 +10,17 @@ import java.io.IOException;
 import java.util.Random;
 
 import javafx.concurrent.Task;
-import javafx.util.Duration;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class DefaultDownloaderService implements DownloaderService {
-
-    private ScheduledDownloadService scheduledDownloadService;
-    private final SettingsService settingsService;
+public class DefaultDownloaderService extends AbstractBackgroundService implements DownloaderService {
 
     public DefaultDownloaderService() {
 
-        this.settingsService = new DefaultSettingsService();
+        super(new ScheduledDownloadService(), new DefaultSettingsService());
     }
 
     @Override
@@ -108,23 +103,11 @@ public class DefaultDownloaderService implements DownloaderService {
     @Override
     public void start() {
 
-        this.scheduledDownloadService = new ScheduledDownloadService();
-
         int interval = this.settingsService.getDownloadIntervalValue();
         String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
-        this.scheduledDownloadService.start();
-    }
-
-    @Override
-    public void updateState(Boolean value) {
-
-        if (value == true) {
-            this.scheduledDownloadService.start();
-        } else {
-            this.scheduledDownloadService.cancel();
-        }
+        this.scheduledService.start();
     }
 
     @Override
@@ -134,26 +117,6 @@ public class DefaultDownloaderService implements DownloaderService {
         String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
-        this.scheduledDownloadService.restart();
-    }
-
-    private void setInterval(int interval, String timeUnit) {
-
-        Duration duration = null;
-
-        if (timeUnit.equals("seconds")) {
-            duration = Duration.seconds(interval);
-        }
-
-        if (timeUnit.equals("minutes")) {
-            duration = Duration.minutes(interval);
-        }
-
-        if (timeUnit.equals("hours")) {
-            duration = Duration.hours(interval);
-        }
-
-        this.scheduledDownloadService.setPeriod(duration);
-        this.scheduledDownloadService.setDelay(duration.add(Duration.seconds(5)));
+        this.scheduledService.restart();
     }
 }

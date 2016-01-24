@@ -5,26 +5,21 @@ import com.sun.jna.platform.win32.WinDef;
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDesktopService;
 import fi.kennyhei.wallsafe.util.SPI;
 import fi.kennyhei.wallsafe.service.DesktopService;
-import fi.kennyhei.wallsafe.service.SettingsService;
 
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
-import javafx.util.Duration;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
 
-public class DefaultDesktopService implements DesktopService {
-
-    private ScheduledDesktopService scheduledDesktopService;
-    private final SettingsService settingsService;
+public class DefaultDesktopService extends AbstractBackgroundService implements DesktopService {
 
     private String currentFilePath;
 
     public DefaultDesktopService() {
 
-        this.settingsService = new DefaultSettingsService();
+        super(new ScheduledDesktopService(), new DefaultSettingsService());
     }
 
     @Override
@@ -110,23 +105,13 @@ public class DefaultDesktopService implements DesktopService {
     @Override
     public void start() {
 
-        this.scheduledDesktopService = new ScheduledDesktopService();
+        this.scheduledService = new ScheduledDesktopService();
 
         int interval = this.settingsService.getChangeIntervalValue();
         String timeUnit = this.settingsService.getChangeIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
-        this.scheduledDesktopService.start();
-    }
-
-    @Override
-    public void updateState(Boolean value) {
-
-        if (value == true) {
-            this.scheduledDesktopService.start();
-        } else {
-            this.scheduledDesktopService.cancel();
-        }
+        this.scheduledService.start();
     }
 
     @Override
@@ -136,26 +121,6 @@ public class DefaultDesktopService implements DesktopService {
         String timeUnit = this.settingsService.getChangeIntervalTimeunit();
 
         this.setInterval(interval, timeUnit);
-        this.scheduledDesktopService.restart();
-    }
-
-    private void setInterval(int interval, String timeUnit) {
-
-        Duration duration = null;
-
-        if (timeUnit.equals("seconds")) {
-            duration = Duration.seconds(interval);
-        }
-
-        if (timeUnit.equals("minutes")) {
-            duration = Duration.minutes(interval);
-        }
-
-        if (timeUnit.equals("hours")) {
-            duration = Duration.hours(interval);
-        }
-
-        this.scheduledDesktopService.setPeriod(duration);
-        this.scheduledDesktopService.setDelay(duration.add(Duration.seconds(5)));
+        this.scheduledService.restart();
     }
 }
