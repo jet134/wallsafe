@@ -21,7 +21,7 @@ public abstract class AbstractBackgroundService {
     public void updateState(Boolean value) {
 
         if (value == true) {
-            this.scheduledService.start();
+            this.scheduledService.restart();
         } else {
             this.scheduledService.cancel();
         }

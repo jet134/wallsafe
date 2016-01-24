@@ -3,6 +3,7 @@ package fi.kennyhei.wallsafe.controller;
 import fi.kennyhei.wallsafe.WSSystemTray;
 import fi.kennyhei.wallsafe.WallSafeFactory;
 import fi.kennyhei.wallsafe.service.DesktopService;
+import fi.kennyhei.wallsafe.service.DownloaderService;
 
 import java.awt.MenuItem;
 import java.awt.SystemTray;
@@ -16,6 +17,7 @@ public class TrayController {
 
     // Services
     private final DesktopService desktopService;
+    private final DownloaderService downloaderService;
 
     // System tray
     private final WSSystemTray systemTray;
@@ -23,7 +25,10 @@ public class TrayController {
     public TrayController(WSSystemTray systemTray) {
 
         this.systemTray = systemTray;
+
         this.desktopService = WallSafeFactory.getDesktopService();
+        this.downloaderService = WallSafeFactory.getDownloaderService();
+
         this.initialize();
     }
 
@@ -34,6 +39,10 @@ public class TrayController {
         // Open item
         MenuItem openItem = menuItems.get(WSSystemTray.OPEN_ITEM);
         openItem.addActionListener(event -> Platform.runLater(this::showStage));
+
+        // Playback item
+        MenuItem playbackItem = menuItems.get(WSSystemTray.PLAYBACK_ITEM);
+        playbackItem.addActionListener(event -> onPlayback());
 
         // Delete item
         MenuItem deleteItem = menuItems.get(WSSystemTray.DELETE_ITEM);
@@ -88,5 +97,34 @@ public class TrayController {
     private void onPreviousWallpaper() {
 
         this.desktopService.changeToPrevious();
+    }
+
+    private void onPlayback() {
+
+        Map<String, MenuItem> menuItems = this.systemTray.getMenuItems();
+        MenuItem playbackItem = menuItems.get(WSSystemTray.PLAYBACK_ITEM);
+
+        // Pause services
+        if (playbackItem.getLabel().equals("Pause")) {
+
+            // Scheduled services can only be called from a Java FX Application
+            // thread. Platform.runLater runs the specified code on the Java FX
+            // application thread sometime in the future.
+            Platform.runLater(() -> {
+                desktopService.updateState(false);
+                downloaderService.updateState(false);
+
+                playbackItem.setLabel("Play");
+            });
+
+        } else if (playbackItem.getLabel().equals("Play")) {
+
+            Platform.runLater(() -> {
+                desktopService.updateState(true);
+                downloaderService.updateState(true);
+
+                playbackItem.setLabel("Pause");
+            });
+        }
     }
 }
