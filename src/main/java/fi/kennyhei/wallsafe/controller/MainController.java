@@ -121,7 +121,10 @@ public class MainController implements Initializable {
         this.changeIntervalCheckBox.selectedProperty().bindBidirectional(this.desktopService.isRunningProperty());
         this.changeIntervalCheckBox.selectedProperty().addListener(listener -> {
 
-            App.getSystemTray().getTrayController().togglePlaybackText();
+            if (App.getSystemTray() != null) {
+
+                App.getSystemTray().getTrayController().togglePlaybackText();
+            }
         });
 
         this.changeIntervalTextField.textProperty()
