@@ -113,8 +113,6 @@ public class TrayController {
             Platform.runLater(() -> {
 
                 desktopService.isRunningProperty().set(false);
-                downloaderService.isRunningProperty().set(false);
-
                 playbackItem.setLabel("Play");
             });
 
@@ -123,10 +121,20 @@ public class TrayController {
             Platform.runLater(() -> {
 
                 desktopService.isRunningProperty().set(true);
-                downloaderService.isRunningProperty().set(true);
-
                 playbackItem.setLabel("Pause");
             });
+        }
+    }
+
+    public void togglePlaybackText() {
+
+        Map<String, MenuItem> menuItems = this.systemTray.getMenuItems();
+        MenuItem playbackItem = menuItems.get(WSSystemTray.PLAYBACK_ITEM);
+
+        if (playbackItem.getLabel().equals("Pause")) {
+            playbackItem.setLabel("Play");
+        } else if (playbackItem.getLabel().equals("Play")) {
+            playbackItem.setLabel("Pause");
         }
     }
 }

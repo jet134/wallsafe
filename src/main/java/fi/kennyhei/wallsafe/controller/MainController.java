@@ -1,5 +1,6 @@
 package fi.kennyhei.wallsafe.controller;
 
+import fi.kennyhei.wallsafe.App;
 import fi.kennyhei.wallsafe.WallSafeFactory;
 import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
@@ -118,6 +119,10 @@ public class MainController implements Initializable {
         // Change interval handlers
         // Use bidirectional binding, if checkbox value is changed, desktop service state is automatically updated and vice versa
         this.changeIntervalCheckBox.selectedProperty().bindBidirectional(this.desktopService.isRunningProperty());
+        this.changeIntervalCheckBox.selectedProperty().addListener(listener -> {
+
+            App.getSystemTray().getTrayController().togglePlaybackText();
+        });
 
         this.changeIntervalTextField.textProperty()
                                     .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->

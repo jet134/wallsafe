@@ -138,6 +138,11 @@ public class WSSystemTray {
         return this.trayIcon;
     }
 
+    public TrayController getTrayController() {
+
+        return this.trayController;
+    }
+
     public Stage getStage() {
 
         return this.stage;

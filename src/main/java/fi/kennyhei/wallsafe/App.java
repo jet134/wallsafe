@@ -14,6 +14,7 @@ import static javafx.application.Application.launch;
 public class App extends Application {
 
     public static final String ICON_LOCATION = "http://icons.iconarchive.com/icons/mcdo-design/aqua-candy/16/Wallpaper-Folder-graphite-icon.png";
+    private static WSSystemTray systemTray;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -28,13 +29,18 @@ public class App extends Application {
         scene.getStylesheets().add("/styles/Styles.css");
 
         // Set up a system tray for application
-        WSSystemTray systemTray = new WSSystemTray(stage);
+        systemTray = new WSSystemTray(stage);
         SwingUtilities.invokeLater(systemTray::initialize);
 
         stage.setScene(scene);
         stage.setTitle("WallSafe");
         stage.getIcons().add(new javafx.scene.image.Image(ICON_LOCATION));
         stage.show();
+    }
+
+    public static WSSystemTray getSystemTray() {
+
+        return systemTray;
     }
 
    /**
