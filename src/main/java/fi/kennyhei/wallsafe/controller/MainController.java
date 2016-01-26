@@ -15,7 +15,6 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.Parent;
@@ -76,9 +75,9 @@ public class MainController implements Initializable {
 
         String directoryPath = this.settingsService.getDirectoryPath();
         this.chooseDirectoryButton.setText(directoryPath);
-        this.chooseDirectoryButton.setOnAction((ActionEvent event) -> onChooseDirectory(event));
+        this.chooseDirectoryButton.setOnAction(event -> onChooseDirectory());
 
-        this.resolutionComboBox.setOnAction((ActionEvent event) -> onResolution(event));
+        this.resolutionComboBox.setOnAction(event -> onResolution());
 
         // Find out native resolution
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
@@ -124,7 +123,7 @@ public class MainController implements Initializable {
                                     .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
                                                   onNumericIntervalValueChange(oldValue, newValue, this.changeIntervalTextField));
 
-        this.changeIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.changeIntervalComboBox));
+        this.changeIntervalComboBox.setOnAction(event -> onIntervalTimeUnitChange(this.changeIntervalComboBox));
 
         // Download interval handlers
         // Use bidirectional binding, if checkbox value is changed, downloader service state is automatically updated and vice versa
@@ -134,7 +133,7 @@ public class MainController implements Initializable {
                                       .addListener((ObservableValue<? extends String> observable, String oldValue, String newValue) ->
                                                     onNumericIntervalValueChange(oldValue, newValue, this.downloadIntervalTextField));
 
-        this.downloadIntervalComboBox.setOnAction((ActionEvent event) -> onIntervalTimeUnitChange(event, this.downloadIntervalComboBox));
+        this.downloadIntervalComboBox.setOnAction(event -> onIntervalTimeUnitChange(this.downloadIntervalComboBox));
     }
 
     private void initializeKeywordHandlers() {
@@ -142,8 +141,8 @@ public class MainController implements Initializable {
         ObservableList<String> keywords = FXCollections.observableArrayList(this.settingsService.getKeywords());
         this.keywordsListView.setItems(keywords);
 
-        this.addKeywordButton.setOnAction((ActionEvent event) -> onAddKeyword(event));
-        this.removeKeywordButton.setOnAction((ActionEvent event) -> onRemoveKeyword(event));
+        this.addKeywordButton.setOnAction(event -> onAddKeyword());
+        this.removeKeywordButton.setOnAction(event -> onRemoveKeyword());
     }
 
     public Parent getView() {
@@ -173,7 +172,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void onIntervalTimeUnitChange(ActionEvent event, ComboBox<String> intervalComboBox) {
+    private void onIntervalTimeUnitChange(ComboBox<String> intervalComboBox) {
 
         String timeUnit = intervalComboBox.getSelectionModel().getSelectedItem();
 
@@ -190,13 +189,13 @@ public class MainController implements Initializable {
         }
     }
 
-    public void onResolution(ActionEvent event) {
+    public void onResolution() {
 
         String resolution = this.resolutionComboBox.getSelectionModel().getSelectedItem();
         this.settingsService.setResolution(resolution);
     }
 
-    public void onChooseDirectory(ActionEvent event) {
+    public void onChooseDirectory() {
 
         DirectoryChooser directoryChooser = new DirectoryChooser();
 
@@ -214,7 +213,7 @@ public class MainController implements Initializable {
         }
     }
 
-    private void onAddKeyword(ActionEvent event) {
+    private void onAddKeyword() {
 
         TextInputDialog dialog = new TextInputDialog();
         dialog.setTitle("Add keyword");
@@ -231,7 +230,7 @@ public class MainController implements Initializable {
         });
     }
 
-    private void onRemoveKeyword(ActionEvent event) {
+    private void onRemoveKeyword() {
 
         String selectedItem = this.keywordsListView.getSelectionModel().getSelectedItem();
 
