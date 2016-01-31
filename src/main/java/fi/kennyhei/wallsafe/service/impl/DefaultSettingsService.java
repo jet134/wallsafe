@@ -16,10 +16,12 @@ import java.util.prefs.Preferences;
 public class DefaultSettingsService implements SettingsService {
 
     private final Settings settings;
+    private final ObjectMapper mapper;
 
     public DefaultSettingsService() {
 
         this.settings = Settings.getInstance();
+        this.mapper = new ObjectMapper();
     }
 
     @Override
@@ -174,8 +176,6 @@ public class DefaultSettingsService implements SettingsService {
     }
 
     private void updateKeywordsPreference(Map<String, Integer> keywords) {
-
-        ObjectMapper mapper = new ObjectMapper();
 
         try {
 
