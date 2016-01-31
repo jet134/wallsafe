@@ -146,7 +146,7 @@ public class MainController implements Initializable {
 
     private void initializeKeywordHandlers() {
 
-        ObservableList<String> keywords = FXCollections.observableArrayList(this.settingsService.getKeywords());
+        ObservableList<String> keywords = FXCollections.observableArrayList(this.settingsService.getPlainKeywords());
         this.keywordsListView.setItems(keywords);
 
         this.addKeywordButton.setOnAction(event -> onAddKeyword());

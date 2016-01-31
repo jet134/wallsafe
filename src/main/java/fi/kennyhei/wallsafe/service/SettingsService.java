@@ -1,6 +1,7 @@
 package fi.kennyhei.wallsafe.service;
 
 import java.util.List;
+import java.util.Map;
 
 public interface SettingsService {
 
@@ -13,7 +14,8 @@ public interface SettingsService {
     public void addKeyword(String keyword);
     public void removeKeyword(String keyword);
 
-    public List<String> getKeywords();
+    public List<String> getPlainKeywords();
+    public Map<String, Integer> getKeywords();
     public String getRandomKeyword();
 
     public int getChangeIntervalValue();
@@ -31,6 +33,6 @@ public interface SettingsService {
     public String getDirectoryPath();
     public void setDirectoryPath(String selectedDirectory);
 
-    public int getIndexOfCurrentWallpaper();
-    public void setIndexOfCurrentWallpaper(int value);
+    public void setIndexOfKeyword(String keyword, int index);
+    public int getIndexOfKeyword(String currentKeyword);
 }

@@ -9,6 +9,7 @@ import fi.kennyhei.wallsafe.service.DesktopService;
 import java.io.File;
 import java.io.FileFilter;
 import java.util.Arrays;
+import java.util.Map;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -16,6 +17,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 public class DefaultDesktopService extends AbstractBackgroundService implements DesktopService {
 
     private String currentFilePath;
+    private String currentKeyword;
 
     public DefaultDesktopService() {
 
@@ -35,22 +37,33 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeToNext() {
 
-        int index = this.settingsService.getIndexOfCurrentWallpaper();
-        this.changeToIndex(index + 1);
+        String keyword = this.settingsService.getRandomKeyword();
+        int index = this.settingsService.getIndexOfKeyword(keyword);
+
+        this.changeToIndex(index + 1, keyword);
     }
 
     @Override
     public void changeToPrevious() {
 
-        int index = this.settingsService.getIndexOfCurrentWallpaper();
-        this.changeToIndex(index - 1);
+        String keyword = this.settingsService.getRandomKeyword();
+        int index = this.settingsService.getIndexOfKeyword(keyword);
+
+        this.changeToIndex(index - 1, keyword);
     }
 
-    private void changeToIndex(int index) {
+    private void changeToIndex(int index, String keyword) {
 
         String path = this.settingsService.getDirectoryPath();
+        path += "\\" + keyword;
+
+        System.out.println("Selecting wallpaper from: " + path);
 
         File directory = new File(path);
+
+        if (!directory.exists()) {
+            return;
+        }
 
         FileFilter fileFilter = new WildcardFileFilter("wallhaven-*");
         File[] wallpapers = directory.listFiles(fileFilter);
@@ -71,15 +84,21 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         path += "\\" + wallpapers[index].getName();
 
         this.currentFilePath = path;
+        this.currentKeyword = keyword;
+
         this.changeWallpaper(path);
 
-        this.settingsService.setIndexOfCurrentWallpaper(index);
+        this.settingsService.setIndexOfKeyword(keyword, index);
     }
 
     @Override
     public void resetIndex() {
 
-        this.settingsService.setIndexOfCurrentWallpaper(0);
+        Map<String, Integer> keywords = this.settingsService.getKeywords();
+
+        for (String key : keywords.keySet()) {
+            this.settingsService.setIndexOfKeyword(key, -1);
+        }
     }
 
     @Override
@@ -93,10 +112,10 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         File file = new File(this.currentFilePath);
         file.delete();
 
-        int index = this.settingsService.getIndexOfCurrentWallpaper();
+        int index = this.settingsService.getIndexOfKeyword(this.currentKeyword);
 
         if (index > 0) {
-            this.settingsService.setIndexOfCurrentWallpaper(index - 1);
+            this.settingsService.setIndexOfKeyword(this.currentKeyword, index - 1);
         }
 
         this.changeToNext();

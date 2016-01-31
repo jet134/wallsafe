@@ -18,6 +18,8 @@ import org.jsoup.select.Elements;
 
 public class DefaultDownloaderService extends AbstractBackgroundService implements DownloaderService {
 
+    private String keyword;
+
     public DefaultDownloaderService() {
 
         super(new ScheduledDownloadService(), new DefaultSettingsService());
@@ -27,7 +29,7 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
     public void download() {
 
         // TODO: Add option for user to use keywords or download a completely random image
-        String keyword = this.settingsService.getRandomKeyword();
+        this.keyword = this.settingsService.getRandomKeyword();
         this.settingsService.buildUrl(keyword);
 
         Task<Void> task = new Task<Void>() {
@@ -75,8 +77,8 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         String filename = parts[parts.length - 1];
 
         parts = filename.split("\\.");
-
         String extension = parts[1];
+
         if (extension.contains("?")) {
 
             extension = extension.substring(0, extension.indexOf("?"));
@@ -90,14 +92,27 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
 
         byte[] bytes = Jsoup.connect(url).userAgent(Settings.USER_AGENT).ignoreContentType(true).execute().bodyAsBytes();
 
-        String filepath = this.settingsService.getDirectoryPath() + "\\" + filename;
+        createKeywordDirectory(this.keyword);
+        String path = this.settingsService.getDirectoryPath() + "\\" + this.keyword + "\\" + filename;
 
-        System.out.println(filepath);
+        System.out.println(path);
         System.out.println();
 
-        FileOutputStream fos = new FileOutputStream(new File(filepath));
+        FileOutputStream fos = new FileOutputStream(new File(path));
         fos.write(bytes);
         fos.close();
+    }
+
+    private void createKeywordDirectory(String keyword) {
+
+        String path = this.settingsService.getDirectoryPath() + "\\" + keyword;
+        File keywordDirectory = new File(path);
+
+        if (keywordDirectory.exists()) {
+            return;
+        }
+
+        keywordDirectory.mkdirs();
     }
 
     @Override

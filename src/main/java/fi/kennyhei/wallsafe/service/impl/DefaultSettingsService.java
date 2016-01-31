@@ -1,11 +1,16 @@
 package fi.kennyhei.wallsafe.service.impl;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import fi.kennyhei.wallsafe.service.SettingsService;
 import fi.kennyhei.wallsafe.model.Settings;
+import java.util.ArrayList;
 
-import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.prefs.Preferences;
 
 public class DefaultSettingsService implements SettingsService {
@@ -29,8 +34,12 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public void addKeyword(String keyword) {
 
-        List<String> keywords = settings.getKeywords();
-        keywords.add(keyword);
+        keyword = Settings.WS_KEYWORDS + "." + keyword;
+        Map<String, Integer> keywords = settings.getKeywords();
+
+        if (!keywords.containsKey(keyword)) {
+            keywords.put(keyword, -1);
+        }
 
         this.updateKeywordsPreference(keywords);
     }
@@ -38,24 +47,18 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public void removeKeyword(String keyword) {
 
-        List<String> keywords = settings.getKeywords();
-        Iterator<String> keywordIterator = keywords.iterator();
+        keyword = Settings.WS_KEYWORDS + "." + keyword;
+        Map<String, Integer> keywords = settings.getKeywords();
 
-        while (keywordIterator.hasNext()) {
-
-            String value = keywordIterator.next();
-
-            if (value.equals(keyword)) {
-                keywordIterator.remove();
-                break;
-            }
+        if (keywords.containsKey(keyword)) {
+            keywords.remove(keyword);
         }
 
         this.updateKeywordsPreference(keywords);
     }
 
     @Override
-    public List<String> getKeywords() {
+    public Map<String, Integer> getKeywords() {
 
         return settings.getKeywords();
     }
@@ -65,10 +68,26 @@ public class DefaultSettingsService implements SettingsService {
 
         Random r = new Random();
 
-        List<String> keywords = settings.getKeywords();
-        int index = r.nextInt(keywords.size());
+        Set<String> keys = this.settings.getKeywords().keySet();
+        String[] keywords = keys.toArray(new String[keys.size()]);
 
-        return keywords.get(index);
+        int index = r.nextInt(keywords.length);
+
+        String keyword = keywords[index].split("\\.")[1];
+        return keyword;
+    }
+
+    @Override
+    public List<String> getPlainKeywords() {
+
+        Set<String> keys = this.settings.getKeywords().keySet();
+        List<String> keywords = new ArrayList<>();
+
+        for (String keyword : keys) {
+            keywords.add(keyword.split("\\.")[1]);
+        }
+
+        return keywords;
     }
 
     @Override
@@ -154,34 +173,43 @@ public class DefaultSettingsService implements SettingsService {
         this.updatePreference(Settings.WS_DOWNLOAD_DIRECTORY, selectedDirectory);
     }
 
-    @Override
-    public int getIndexOfCurrentWallpaper() {
+    private void updateKeywordsPreference(Map<String, Integer> keywords) {
 
-        return settings.getIndexOfCurrentWallpaper();
-    }
+        ObjectMapper mapper = new ObjectMapper();
 
-    @Override
-    public void setIndexOfCurrentWallpaper(int value) {
+        try {
 
-        settings.setIndexOfCurrentWallpaper(value);
-        this.updatePreference(Settings.WS_CURRENT_WALLPAPER_INDEX, Integer.toString(value));
-    }
+            String mapAsJson = mapper.writeValueAsString(keywords);
+            this.updatePreference(Settings.WS_KEYWORDS, mapAsJson);
 
-    private void updateKeywordsPreference(List<String> keywords) {
-
-        String words = "";
-
-        for (String value : keywords) {
-            words += value;
-            words += ",";
+        } catch (JsonProcessingException ex) {
+            System.out.println("Couldn't serialize to JSON.");
         }
-
-        this.updatePreference(Settings.WS_KEYWORDS, words.substring(0, words.length() - 1));
     }
 
     private void updatePreference(String key, String value) {
 
         Preferences preferences = this.settings.getPreferences();
         preferences.put(key, value);
+    }
+
+    @Override
+    public void setIndexOfKeyword(String keyword, int index) {
+
+        keyword = Settings.WS_KEYWORDS + "." + keyword;
+
+        Map<String, Integer> keywords = this.settings.getKeywords();
+        keywords.put(keyword, index);
+
+        this.updateKeywordsPreference(keywords);
+    }
+
+    @Override
+    public int getIndexOfKeyword(String keyword) {
+
+        keyword = Settings.WS_KEYWORDS + "." + keyword;
+
+        Map<String, Integer> keywords = this.settings.getKeywords();
+        return keywords.get(keyword);
     }
 }

@@ -1,9 +1,10 @@
 package fi.kennyhei.wallsafe.model;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.io.IOException;
+import java.util.Map;
 import java.util.prefs.Preferences;
 
 public class Settings {
@@ -18,7 +19,6 @@ public class Settings {
     public static final String WS_RESOLUTION = "resolution";
     public static final String WS_DOWNLOAD_DIRECTORY = "download.directory";
 
-    public static final String WS_CURRENT_WALLPAPER_INDEX = "current.wallpaper.index";
     public static final String WS_KEYWORDS = "keywords";
 
     // User-Agent header
@@ -34,7 +34,7 @@ public class Settings {
     private String resolution;
 
     // Keywords for searching wallpapers
-    private List<String> keywords;
+    private Map<String, Integer> keywords;
 
     // Download directory
     private String directoryPath;
@@ -45,9 +45,6 @@ public class Settings {
 
     private int downloadIntervalValue;
     private String downloadIntervalTimeunit;
-
-    // Index of current wallpaper
-    private int indexOfCurrentWallpaper;
 
     // Base URL where wallpapers are downloaded from
     private final String baseUrl = "http://alpha.wallhaven.cc/search";
@@ -84,12 +81,12 @@ public class Settings {
         this.resolution = resolution;
     }
 
-    public List<String> getKeywords() {
+    public Map<String, Integer> getKeywords() {
 
         return keywords;
     }
 
-    public void setKeywords(List<String> keywords) {
+    public void setKeywords(Map<String, Integer> keywords) {
 
         this.keywords = keywords;
     }
@@ -142,16 +139,6 @@ public class Settings {
     public void setDownloadIntervalTimeunit(String downloadIntervalTimeunit) {
 
         this.downloadIntervalTimeunit = downloadIntervalTimeunit;
-    }
-
-    public int getIndexOfCurrentWallpaper() {
-
-        return indexOfCurrentWallpaper;
-    }
-
-    public void setIndexOfCurrentWallpaper(int indexOfCurrentWallpaper) {
-
-        this.indexOfCurrentWallpaper = indexOfCurrentWallpaper;
     }
 
     public Preferences getPreferences() {
@@ -214,9 +201,20 @@ public class Settings {
         File downloadDirectory = new File(this.directoryPath);
         downloadDirectory.mkdirs();
 
-        this.indexOfCurrentWallpaper = Integer.parseInt(preferences.get(WS_CURRENT_WALLPAPER_INDEX, "-1"));
+        ObjectMapper mapper = new ObjectMapper();
 
-        String[] prefKeywords = preferences.get(WS_KEYWORDS, "space,nature,abstract").split(",");
-        this.keywords = new ArrayList<>(Arrays.asList(prefKeywords));
+        // Deserializing JSON might fail for old users as keywords preference value isn't valid JSON for them
+        while (true) {
+            String keywordMapAsJson = preferences.get(WS_KEYWORDS, "{\"keywords.abstract\":-1,\"keywords.nature\":-1,\"keywords.space\":-1}");
+
+            try {
+                this.keywords = mapper.readValue(keywordMapAsJson, Map.class);
+                break;
+            } catch (IOException ex) {
+
+                System.out.println("Couldn't deserialize JSON.");
+                preferences.remove(WS_KEYWORDS);
+            }
+        }
     }
 }
