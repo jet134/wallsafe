@@ -30,7 +30,13 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
 
         // TODO: Add option for user to use keywords or download a completely random image
         this.keyword = this.settingsService.getRandomKeyword();
-        this.settingsService.buildUrl(keyword);
+
+        if (this.keyword == null) {
+            this.settingsService.buildUrl();
+            this.keyword = "random";
+        } else {
+            this.settingsService.buildUrl(keyword);
+        }
 
         Task<Void> task = new Task<Void>() {
 

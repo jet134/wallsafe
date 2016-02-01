@@ -17,11 +17,13 @@ public class DefaultSettingsService implements SettingsService {
 
     private final Settings settings;
     private final ObjectMapper mapper;
+    private final Random random;
 
     public DefaultSettingsService() {
 
         this.settings = Settings.getInstance();
         this.mapper = new ObjectMapper();
+        this.random = new Random();
     }
 
     @Override
@@ -68,12 +70,15 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public String getRandomKeyword() {
 
-        Random r = new Random();
-
         Set<String> keys = this.settings.getKeywords().keySet();
+
+        if (keys.isEmpty()) {
+            return null;
+        }
+
         String[] keywords = keys.toArray(new String[keys.size()]);
 
-        int index = r.nextInt(keywords.length);
+        int index = random.nextInt(keywords.length);
 
         String keyword = keywords[index].split("\\.")[1];
         return keyword;

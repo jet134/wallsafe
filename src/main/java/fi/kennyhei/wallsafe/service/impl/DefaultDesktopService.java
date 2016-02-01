@@ -54,6 +54,11 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
 
     private void changeToIndex(int index, String keyword) {
 
+        // User hasn't specified any keywords
+        if (keyword == null) {
+            keyword = "random";
+        }
+
         String path = this.settingsService.getDirectoryPath();
         path += "\\" + keyword;
 
