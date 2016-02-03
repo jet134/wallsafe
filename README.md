@@ -4,4 +4,4 @@ Wallpaper manager developed specifically for Windows. WallSafe has two key funct
 Inspired by [Variety](http://peterlevi.com/variety/).
 
 # Requirements
-* Java SE 8u40 or greater.
+* Java SE 8u40 or greater
