@@ -100,7 +100,7 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         return filename;
     }
 
-private void downloadImage(String url, String filename) throws IOException {
+    private void downloadImage(String url, String filename) throws IOException {
 
         createKeywordDirectory(this.keyword);
         String path = this.settingsService.getDirectoryPath() + "\\" + this.keyword + "\\" + filename;
