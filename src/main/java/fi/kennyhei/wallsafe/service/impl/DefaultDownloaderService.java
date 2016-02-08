@@ -5,11 +5,17 @@ import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.model.Settings;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Random;
 
 import javafx.concurrent.Task;
+
+import org.apache.commons.io.FileUtils;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.HttpClients;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -94,9 +100,7 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         return filename;
     }
 
-    private void downloadImage(String url, String filename) throws IOException {
-
-        byte[] bytes = Jsoup.connect(url).userAgent(Settings.USER_AGENT).ignoreContentType(true).execute().bodyAsBytes();
+private void downloadImage(String url, String filename) throws IOException {
 
         createKeywordDirectory(this.keyword);
         String path = this.settingsService.getDirectoryPath() + "\\" + this.keyword + "\\" + filename;
@@ -104,9 +108,18 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         System.out.println(path);
         System.out.println();
 
-        FileOutputStream fos = new FileOutputStream(new File(path));
-        fos.write(bytes);
-        fos.close();
+        File file = new File(path);
+
+        HttpClient httpclient = HttpClients.createDefault();
+        HttpGet get = new HttpGet(url);
+        get.addHeader("User-Agent", Settings.USER_AGENT);
+
+        HttpResponse response = httpclient.execute(get);
+        HttpEntity entity = response.getEntity();
+
+        if (entity != null) {
+            FileUtils.copyInputStreamToFile(entity.getContent(), file);
+        }
     }
 
     private void createKeywordDirectory(String keyword) {
