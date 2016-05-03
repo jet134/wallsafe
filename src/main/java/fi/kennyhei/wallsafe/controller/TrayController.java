@@ -105,7 +105,7 @@ public class TrayController {
         MenuItem playbackItem = menuItems.get(WSSystemTray.PLAYBACK_ITEM);
 
         // Pause services
-        if (playbackItem.getLabel().equals("Pause")) {
+        if (playbackItem.getLabel().equals("Stop")) {
 
             // Scheduled services can only be called from a Java FX Application
             // thread. Platform.runLater runs the specified code on the Java FX
@@ -113,15 +113,15 @@ public class TrayController {
             Platform.runLater(() -> {
 
                 desktopService.isRunningProperty().set(false);
-                playbackItem.setLabel("Play");
+                playbackItem.setLabel("Start");
             });
 
-        } else if (playbackItem.getLabel().equals("Play")) {
+        } else if (playbackItem.getLabel().equals("Start")) {
 
             Platform.runLater(() -> {
 
                 desktopService.isRunningProperty().set(true);
-                playbackItem.setLabel("Pause");
+                playbackItem.setLabel("Stop");
             });
         }
     }
@@ -131,10 +131,10 @@ public class TrayController {
         Map<String, MenuItem> menuItems = this.systemTray.getMenuItems();
         MenuItem playbackItem = menuItems.get(WSSystemTray.PLAYBACK_ITEM);
 
-        if (playbackItem.getLabel().equals("Pause")) {
-            playbackItem.setLabel("Play");
-        } else if (playbackItem.getLabel().equals("Play")) {
-            playbackItem.setLabel("Pause");
+        if (playbackItem.getLabel().equals("Stop")) {
+            playbackItem.setLabel("Start");
+        } else if (playbackItem.getLabel().equals("Start")) {
+            playbackItem.setLabel("Stop");
         }
     }
 }

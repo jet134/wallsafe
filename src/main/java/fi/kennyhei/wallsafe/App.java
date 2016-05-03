@@ -3,9 +3,10 @@ package fi.kennyhei.wallsafe;
 import fi.kennyhei.wallsafe.controller.MainController;
 
 import javafx.application.Application;
-import javafx.scene.Scene;
-import javafx.stage.Stage;
 import javafx.application.Platform;
+import javafx.scene.Scene;
+import javafx.scene.image.Image;
+import javafx.stage.Stage;
 
 import javax.swing.SwingUtilities;
 
@@ -20,6 +21,7 @@ public class App extends Application {
     public void start(Stage stage) throws Exception {
 
         // Instructs the JavaFX system not to exit implicitly when the last application window is shut
+        // This is because application keeps running in system tray
         Platform.setImplicitExit(false);
 
         WallSafeFactory factory = new WallSafeFactory();
@@ -34,7 +36,7 @@ public class App extends Application {
 
         stage.setScene(scene);
         stage.setTitle("WallSafe");
-        stage.getIcons().add(new javafx.scene.image.Image(ICON_LOCATION));
+        stage.getIcons().add(new Image(ICON_LOCATION));
         stage.show();
     }
 

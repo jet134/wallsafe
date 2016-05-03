@@ -68,8 +68,9 @@ public class WSSystemTray {
             Image image = ImageIO.read(imageUrl);
             trayIcon = new TrayIcon(image);
 
+            // Create menu buttons for system tray
             createItem(OPEN_ITEM, "Open", true);
-            createItem(PLAYBACK_ITEM, "Pause", true);
+            createItem(PLAYBACK_ITEM, "Stop", true);
             createItem(NEXT_ITEM, "Next", false);
             createItem(PREVIOUS_ITEM, "Previous", false);
             createItem(DELETE_ITEM, "Delete", false);
