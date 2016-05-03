@@ -8,7 +8,9 @@ import fi.kennyhei.wallsafe.service.DesktopService;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
@@ -16,18 +18,22 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 
 public class DefaultDesktopService extends AbstractBackgroundService implements DesktopService {
 
+    // Contains filepaths for all the wallpapers user has used as desktop background
+    private final List<String> history;
+    private int historyIndex = -1;
+
     private String currentFilePath;
     private String currentKeyword;
 
     public DefaultDesktopService() {
 
         super(new ScheduledDesktopService(), new DefaultSettingsService());
+
+        this.history = new ArrayList<>();
     }
 
     @Override
     public void changeWallpaper(String path) {
-
-        System.out.println("Changing wallpaper to " + path);
 
         SPI.INSTANCE.SystemParametersInfo(
                 new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
@@ -39,6 +45,17 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeToNext() {
 
+        // Change from history
+        if (this.historyIndex != this.history.size() - 1) {
+
+            this.historyIndex += 1;
+            this.currentFilePath = this.history.get(this.historyIndex);
+
+            this.changeWallpaper(this.currentFilePath);
+            return;
+        }
+
+        // Change to a new wallpaper
         String keyword = this.settingsService.getRandomKeyword();
         int index = this.settingsService.getIndexOfKeyword(keyword);
 
@@ -48,6 +65,16 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeToPrevious() {
 
+        // Change from history
+        if (this.historyIndex > 0) {
+
+            this.historyIndex -= 1;
+            this.currentFilePath = this.history.get(this.historyIndex);
+
+            this.changeWallpaper(this.currentFilePath);
+        }
+
+        // Change to a new wallpaper
         String keyword = this.settingsService.getRandomKeyword();
         int index = this.settingsService.getIndexOfKeyword(keyword);
 
@@ -98,8 +125,12 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
             return;
         }
 
-        this.currentFilePath = path;
         this.currentKeyword = keyword;
+        this.currentFilePath = path;
+
+        // Add selected wallpaper to history
+        this.history.add(path);
+        this.historyIndex = this.history.size() - 1;
 
         this.changeWallpaper(path);
 
