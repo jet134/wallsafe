@@ -49,9 +49,7 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         if (this.historyIndex != this.history.size() - 1) {
 
             this.historyIndex += 1;
-            this.currentFilePath = this.history.get(this.historyIndex);
-
-            this.changeWallpaper(this.currentFilePath);
+            this.changeFromHistory();
             return;
         }
 
@@ -69,9 +67,8 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         if (this.historyIndex > 0) {
 
             this.historyIndex -= 1;
-            this.currentFilePath = this.history.get(this.historyIndex);
-
-            this.changeWallpaper(this.currentFilePath);
+            this.changeFromHistory();
+            return;
         }
 
         // Change to a new wallpaper
@@ -147,6 +144,12 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         path += "\\" + wallpapers[index].getName();
 
         return path;
+    }
+
+    private void changeFromHistory() {
+
+        this.currentFilePath = this.history.get(this.historyIndex);
+        this.changeWallpaper(this.currentFilePath);
     }
 
     @Override
