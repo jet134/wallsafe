@@ -27,6 +27,8 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeWallpaper(String path) {
 
+        System.out.println("Changing wallpaper to " + path);
+
         SPI.INSTANCE.SystemParametersInfo(
                 new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
                 new WinDef.UINT_PTR(0),
@@ -87,6 +89,14 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
 
         Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
         path += "\\" + wallpapers[index].getName();
+
+        // New wallpaper is exactly the same that's currently
+        // as desktop background, pick a new one
+        if (path.equals(this.currentFilePath)) {
+
+            this.changeToNext();
+            return;
+        }
 
         this.currentFilePath = path;
         this.currentKeyword = keyword;
