@@ -88,34 +88,12 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
             keyword = "random";
         }
 
-        String path = this.settingsService.getDirectoryPath();
-        path += "\\" + keyword;
+        // Select wallpaper and return filepath of the selected wallpaper
+        String path = selectWallpaper(index, keyword);
 
-        System.out.println("Selecting wallpaper from: " + path);
-
-        File directory = new File(path);
-
-        if (!directory.exists()) {
+        if (path == null) {
             return;
         }
-
-        FileFilter fileFilter = new WildcardFileFilter("wallhaven-*");
-        File[] wallpapers = directory.listFiles(fileFilter);
-
-        if (wallpapers.length == 0) {
-            return;
-        }
-
-        if (index >= wallpapers.length) {
-            index = 0;
-        }
-
-        if (index < 0) {
-            index = wallpapers.length - 1;
-        }
-
-        Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
-        path += "\\" + wallpapers[index].getName();
 
         // New wallpaper is exactly the same that's currently
         // as desktop background, pick a new one
@@ -135,6 +113,40 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         this.changeWallpaper(path);
 
         this.settingsService.setIndexOfKeyword(keyword, index);
+    }
+
+    private String selectWallpaper(int index, String keyword) {
+
+        String path = this.settingsService.getDirectoryPath();
+        path += "\\" + keyword;
+
+        System.out.println("Selecting wallpaper from: " + path);
+
+        File directory = new File(path);
+
+        if (!directory.exists()) {
+            return null;
+        }
+
+        FileFilter fileFilter = new WildcardFileFilter("wallhaven-*");
+        File[] wallpapers = directory.listFiles(fileFilter);
+
+        if (wallpapers.length == 0) {
+            return null;
+        }
+
+        if (index >= wallpapers.length) {
+            index = 0;
+        }
+
+        if (index < 0) {
+            index = wallpapers.length - 1;
+        }
+
+        Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
+        path += "\\" + wallpapers[index].getName();
+
+        return path;
     }
 
     @Override
