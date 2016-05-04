@@ -170,8 +170,12 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
             this.changeToNext();
         }
 
+        // Remove file
         File file = new File(this.currentFilePath);
         file.delete();
+
+        // Remove path of the deleted file from history
+        this.history.remove(this.historyIndex);
 
         int index = this.settingsService.getIndexOfKeyword(this.currentKeyword);
 
