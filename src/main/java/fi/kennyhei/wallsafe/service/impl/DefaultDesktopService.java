@@ -176,6 +176,7 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
 
         // Remove path of the deleted file from history
         this.history.remove(this.historyIndex);
+        this.historyIndex -= 1;
 
         int index = this.settingsService.getIndexOfKeyword(this.currentKeyword);
 
