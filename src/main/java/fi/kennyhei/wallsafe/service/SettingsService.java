@@ -35,4 +35,7 @@ public interface SettingsService {
 
     public void setIndexOfKeyword(String keyword, int index);
     public int getIndexOfKeyword(String currentKeyword);
+
+    public void setFilter(String text, boolean isSelected);
+    public boolean isFilterSelected(String text);
 }

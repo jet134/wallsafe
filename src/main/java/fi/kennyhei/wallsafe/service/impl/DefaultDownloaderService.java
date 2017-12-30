@@ -2,7 +2,7 @@ package fi.kennyhei.wallsafe.service.impl;
 
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
-import fi.kennyhei.wallsafe.model.Settings;
+import fi.kennyhei.wallsafe.config.Settings;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,6 +17,7 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
 
+import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -50,13 +51,18 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
             protected Void call() throws Exception {
 
                 System.out.println(settingsService.url());
-                Document doc = Jsoup.connect(settingsService.url()).userAgent(Settings.USER_AGENT).get();
+                Response response = Jsoup.connect(settingsService.url())
+                                         .userAgent(Settings.USER_AGENT)
+                                         .timeout(10000)
+                                         .execute();
+
+                System.out.println(response.statusCode() + " " + response.statusMessage());
+                Document doc = response.parse();
 
                 String url = getRandomImageLink(doc);
                 String filename = parseFilename(url);
 
                 downloadImage(url, filename);
-
                 return null;
             }
         };
@@ -74,7 +80,13 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         Element link = links.get(r.nextInt(links.size()));
 
         System.out.println(link.attr("abs:href"));
-        document = Jsoup.connect(link.attr("abs:href")).userAgent(Settings.USER_AGENT).get();
+        Response response = Jsoup.connect(link.attr("abs:href"))
+                                 .userAgent(Settings.USER_AGENT)
+                                 .timeout(10000)
+                                 .execute();
+
+        System.out.println(response.statusCode() + " " + response.statusMessage());
+        document = response.parse();
 
         Element image = document.select("img#wallpaper").first();
         String url = image.attr("abs:src");

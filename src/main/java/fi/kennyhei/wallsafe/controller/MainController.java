@@ -18,6 +18,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -26,6 +27,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 
 public class MainController implements Initializable {
@@ -43,6 +45,10 @@ public class MainController implements Initializable {
     @FXML private CheckBox downloadIntervalCheckBox;
     @FXML private TextField downloadIntervalTextField;
     @FXML private ComboBox<String> downloadIntervalComboBox;
+
+    // Filter checkboxes
+    @FXML private HBox contentFilterHbox;
+    @FXML private HBox sfwFilterHbox;
 
     // Keywords
     @FXML private ListView<String> keywordsListView;
@@ -70,6 +76,9 @@ public class MainController implements Initializable {
 
         // Setup interval event handlers
         initializeIntervalHandlers();
+
+        // Setup filters
+        initializeFilters();
 
         // Setup keywords event handlers
         initializeKeywordHandlers();
@@ -151,6 +160,30 @@ public class MainController implements Initializable {
 
         this.addKeywordButton.setOnAction(event -> onAddKeyword());
         this.removeKeywordButton.setOnAction(event -> onRemoveKeyword());
+    }
+
+    private void initializeFilters() {
+
+        ObservableList<Node> filters = this.contentFilterHbox.getChildren();
+        ObservableList<Node> sfwFilters = this.sfwFilterHbox.getChildren();
+
+        setupFilterCheckboxes(filters);
+        setupFilterCheckboxes(sfwFilters);
+    }
+
+    private void setupFilterCheckboxes(ObservableList<Node> filters) {
+        for( Node node : filters ) {
+            CheckBox filter = (CheckBox) node;
+
+            filter.setOnAction(event -> {
+                this.settingsService.setFilter(filter.getText(), filter.isSelected());
+            });
+
+            String text = filter.getText();
+            boolean isSelected = this.settingsService.isFilterSelected(text);
+
+            filter.setSelected(isSelected);
+        }
     }
 
     public Parent getView() {

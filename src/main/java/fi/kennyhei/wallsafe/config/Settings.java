@@ -1,9 +1,10 @@
-package fi.kennyhei.wallsafe.model;
+package fi.kennyhei.wallsafe.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URLEncoder;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
@@ -19,6 +20,13 @@ public class Settings {
     public static final String WS_RESOLUTION = "resolution";
     public static final String WS_DOWNLOAD_DIRECTORY = "download.directory";
 
+    public static final String WS_IS_GENERAL = "is.general";
+    public static final String WS_IS_ANIME = "is.anime";
+    public static final String WS_IS_PEOPLE = "is.people";
+    public static final String WS_IS_SFW = "is.sfw";
+    public static final String WS_IS_SKETCHY = "is.sketchy";
+    public static final String WS_IS_NSFW = "is.nsfw";
+
     public static final String WS_KEYWORDS = "keywords";
 
     // User-Agent header
@@ -32,6 +40,14 @@ public class Settings {
 
     // Resolution of the wallpaper, defaults to user's native resolution
     private String resolution;
+
+    // Filter settings (SFW, Sketchy, NSFW)
+    private boolean isGeneral;
+    private boolean isAnime;
+    private boolean isPeople;
+    private boolean isSFW;
+    private boolean isSketchy;
+    private boolean isNSFW;
 
     // Keywords for searching wallpapers
     private Map<String, Integer> keywords;
@@ -79,6 +95,66 @@ public class Settings {
     public void setResolution(String resolution) {
 
         this.resolution = resolution;
+    }
+
+    public boolean isSFW() {
+
+        return this.isSFW;
+    }
+
+    public void setIsSFW(boolean sfw) {
+
+        this.isSFW = sfw;
+    }
+
+    public boolean isSketchy() {
+
+        return this.isSketchy;
+    }
+
+    public void setIsSketchy(boolean sketchy) {
+
+        this.isSketchy = sketchy;
+    }
+
+    public boolean isNSFW() {
+
+        return this.isNSFW;
+    }
+
+    public void setIsNSFW(boolean nsfw) {
+
+        this.isNSFW = nsfw;
+    }
+
+    public boolean isGeneral() {
+
+        return isGeneral;
+    }
+
+    public void setIsGeneral(boolean selected) {
+
+        this.isGeneral = selected;
+    }
+
+    public boolean isAnime() {
+
+        return isAnime;
+    }
+
+    public void setIsAnime(boolean selected) {
+
+        this.isAnime = selected;
+    }
+
+    public boolean isPeople() {
+
+        return isPeople;
+    }
+
+    public void setIsPeople(boolean selected) {
+
+        this.isPeople = selected;
     }
 
     public Map<String, Integer> getKeywords() {
@@ -155,12 +231,26 @@ public class Settings {
 
         StringBuilder sb = new StringBuilder(baseUrl);
 
+        try {
+            keyword = URLEncoder.encode(keyword, "UTF-8");
+        } catch(Exception ex) {}
+
+        String categories = "categories=";
+        categories += toNumeral(isGeneral)
+                   + toNumeral(isAnime)
+                   + toNumeral(isPeople) + "&";
+
+        String purity = "purity=";
+        purity += toNumeral(isSFW)
+               + toNumeral(isSketchy)
+               + toNumeral(isNSFW) + "&";
+
         sb.append("?")
           .append("q=")
           .append(keyword)
           .append("&")
-          .append("categories=101&")
-          .append("purity=101&")
+          .append(categories)
+          .append(purity)
           .append("resolutions=")
           .append(resolution)
           .append("&")
@@ -174,9 +264,19 @@ public class Settings {
 
         StringBuilder sb = new StringBuilder(baseUrl);
 
+        String categories = "categories=";
+        categories += toNumeral(isGeneral)
+                   + toNumeral(isAnime)
+                   + toNumeral(isPeople) + "&";
+
+        String purity = "purity=";
+        purity += toNumeral(isSFW)
+               + toNumeral(isSketchy)
+               + toNumeral(isNSFW) + "&";
+
         sb.append("?")
-          .append("categories=101&")
-          .append("purity=101&")
+          .append(categories)
+          .append(purity)
           .append("resolutions=")
           .append(resolution)
           .append("&")
@@ -195,6 +295,13 @@ public class Settings {
         this.downloadIntervalTimeunit = preferences.get(WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
 
         this.resolution = preferences.get(WS_RESOLUTION, "1920x1080");
+
+        this.isGeneral = Boolean.parseBoolean(preferences.get(WS_IS_GENERAL, "true"));
+        this.isAnime = Boolean.parseBoolean(preferences.get(WS_IS_ANIME, "false"));
+        this.isPeople = Boolean.parseBoolean(preferences.get(WS_IS_PEOPLE, "true"));
+        this.isSFW = Boolean.parseBoolean(preferences.get(WS_IS_SFW, "true"));
+        this.isSketchy = Boolean.parseBoolean(preferences.get(WS_IS_SKETCHY, "false"));
+        this.isNSFW = Boolean.parseBoolean(preferences.get(WS_IS_NSFW, "false"));
 
         this.directoryPath = preferences.get(WS_DOWNLOAD_DIRECTORY, System.getProperty("user.home") + "\\Desktop\\Wallpapers");
 
@@ -216,5 +323,9 @@ public class Settings {
                 preferences.remove(WS_KEYWORDS);
             }
         }
+    }
+
+    private String toNumeral(Boolean input) {
+        return input ? "1" : "0";
     }
 }

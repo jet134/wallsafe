@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import fi.kennyhei.wallsafe.service.SettingsService;
-import fi.kennyhei.wallsafe.model.Settings;
+import fi.kennyhei.wallsafe.config.Settings;
 import java.util.ArrayList;
 
 import java.util.List;
@@ -216,5 +216,55 @@ public class DefaultSettingsService implements SettingsService {
 
         Map<String, Integer> keywords = this.settings.getKeywords();
         return keywords.get(keyword);
+    }
+
+    @Override
+    public void setFilter(String text, boolean isSelected) {
+        switch (text) {
+            case "General":
+                settings.setIsGeneral(isSelected);
+                this.updatePreference(Settings.WS_IS_GENERAL, Boolean.toString(isSelected));
+                break;
+            case "Anime":
+                settings.setIsAnime(isSelected);
+                this.updatePreference(Settings.WS_IS_ANIME, Boolean.toString(isSelected));
+                break;
+            case "People":
+                settings.setIsPeople(isSelected);
+                this.updatePreference(Settings.WS_IS_PEOPLE, Boolean.toString(isSelected));
+                break;
+            case "SFW":
+                settings.setIsSFW(isSelected);
+                this.updatePreference(Settings.WS_IS_SFW, Boolean.toString(isSelected));
+                break;
+            case "Sketchy":
+                settings.setIsSketchy(isSelected);
+                this.updatePreference(Settings.WS_IS_SKETCHY, Boolean.toString(isSelected));
+                break;
+            case "NSFW":
+                settings.setIsNSFW(isSelected);
+                this.updatePreference(Settings.WS_IS_NSFW, Boolean.toString(isSelected));
+                break;
+        }
+    }
+
+    @Override
+    public boolean isFilterSelected(String text) {
+        switch (text) {
+            case "General":
+                return settings.isGeneral();
+            case "Anime":
+                return settings.isAnime();
+            case "People":
+                return settings.isPeople();
+            case "SFW":
+                return settings.isSFW();
+            case "Sketchy":
+                return settings.isSketchy();
+            case "NSFW":
+                return settings.isNSFW();
+        }
+
+        return false;
     }
 }
