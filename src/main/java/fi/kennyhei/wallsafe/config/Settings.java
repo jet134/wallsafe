@@ -10,25 +10,6 @@ import java.util.prefs.Preferences;
 
 public class Settings {
 
-    // Preference keys
-    public static final String WS_CHANGE_INTERVAL_VALUE = "change.interval.value";
-    public static final String WS_CHANGE_INTERVAL_TIMEUNIT = "change.interval.timeunit";
-
-    public static final String WS_DOWNLOAD_INTERVAL_VALUE = "download.interval.value";
-    public static final String WS_DOWNLOAD_INTERVAL_TIMEUNIT = "download.interval.timeunit";
-
-    public static final String WS_RESOLUTION = "resolution";
-    public static final String WS_DOWNLOAD_DIRECTORY = "download.directory";
-
-    public static final String WS_IS_GENERAL = "is.general";
-    public static final String WS_IS_ANIME = "is.anime";
-    public static final String WS_IS_PEOPLE = "is.people";
-    public static final String WS_IS_SFW = "is.sfw";
-    public static final String WS_IS_SKETCHY = "is.sketchy";
-    public static final String WS_IS_NSFW = "is.nsfw";
-
-    public static final String WS_KEYWORDS = "keywords";
-
     // User-Agent header
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
 
@@ -40,14 +21,6 @@ public class Settings {
 
     // Resolution of the wallpaper, defaults to user's native resolution
     private String resolution;
-
-    // Filter settings (SFW, Sketchy, NSFW)
-    private boolean isGeneral;
-    private boolean isAnime;
-    private boolean isPeople;
-    private boolean isSFW;
-    private boolean isSketchy;
-    private boolean isNSFW;
 
     // Keywords for searching wallpapers
     private Map<String, Integer> keywords;
@@ -95,66 +68,6 @@ public class Settings {
     public void setResolution(String resolution) {
 
         this.resolution = resolution;
-    }
-
-    public boolean isSFW() {
-
-        return this.isSFW;
-    }
-
-    public void setIsSFW(boolean sfw) {
-
-        this.isSFW = sfw;
-    }
-
-    public boolean isSketchy() {
-
-        return this.isSketchy;
-    }
-
-    public void setIsSketchy(boolean sketchy) {
-
-        this.isSketchy = sketchy;
-    }
-
-    public boolean isNSFW() {
-
-        return this.isNSFW;
-    }
-
-    public void setIsNSFW(boolean nsfw) {
-
-        this.isNSFW = nsfw;
-    }
-
-    public boolean isGeneral() {
-
-        return isGeneral;
-    }
-
-    public void setIsGeneral(boolean selected) {
-
-        this.isGeneral = selected;
-    }
-
-    public boolean isAnime() {
-
-        return isAnime;
-    }
-
-    public void setIsAnime(boolean selected) {
-
-        this.isAnime = selected;
-    }
-
-    public boolean isPeople() {
-
-        return isPeople;
-    }
-
-    public void setIsPeople(boolean selected) {
-
-        this.isPeople = selected;
     }
 
     public Map<String, Integer> getKeywords() {
@@ -235,21 +148,16 @@ public class Settings {
             keyword = URLEncoder.encode(keyword, "UTF-8");
         } catch(Exception ex) {}
 
-        String categories = "categories=";
-        categories += toNumeral(isGeneral)
-                   + toNumeral(isAnime)
-                   + toNumeral(isPeople) + "&";
-
-        String purity = "purity=";
-        purity += toNumeral(isSFW)
-               + toNumeral(isSketchy)
-               + toNumeral(isNSFW) + "&";
+        String categories = this.categoriesValue();
+        String purity = this.purityValue();
 
         sb.append("?")
           .append("q=")
           .append(keyword)
           .append("&")
+          .append("categories=")
           .append(categories)
+          .append("purity=")
           .append(purity)
           .append("resolutions=")
           .append(resolution)
@@ -264,18 +172,13 @@ public class Settings {
 
         StringBuilder sb = new StringBuilder(baseUrl);
 
-        String categories = "categories=";
-        categories += toNumeral(isGeneral)
-                   + toNumeral(isAnime)
-                   + toNumeral(isPeople) + "&";
-
-        String purity = "purity=";
-        purity += toNumeral(isSFW)
-               + toNumeral(isSketchy)
-               + toNumeral(isNSFW) + "&";
+        String categories = this.categoriesValue();
+        String purity = this.purityValue();
 
         sb.append("?")
+          .append("categories=")
           .append(categories)
+          .append("purity=")
           .append(purity)
           .append("resolutions=")
           .append(resolution)
@@ -286,24 +189,36 @@ public class Settings {
         this.url = sb.toString();
     }
 
+    private String categoriesValue() {
+
+        return toNumeral(Filters.isGeneral()) +
+               toNumeral(Filters.isAnime()) +
+               toNumeral(Filters.isPeople()) + "&";
+    }
+
+    private String purityValue() {
+
+        return toNumeral(Filters.isSFW()) +
+               toNumeral(Filters.isSketchy()) +
+               toNumeral(Filters.isNSFW()) + "&";
+    }
+
+    private String toNumeral(Boolean input) {
+        return input ? "1" : "0";
+    }
+
     private void loadPreferences() {
 
-        this.changeIntervalValue = Integer.parseInt(preferences.get(WS_CHANGE_INTERVAL_VALUE, "60"));
-        this.changeIntervalTimeunit = preferences.get(WS_CHANGE_INTERVAL_TIMEUNIT, "seconds");
+        this.changeIntervalValue = Integer.parseInt(preferences.get(Option.WS_CHANGE_INTERVAL_VALUE, "60"));
+        this.changeIntervalTimeunit = preferences.get(Option.WS_CHANGE_INTERVAL_TIMEUNIT, "seconds");
 
-        this.downloadIntervalValue = Integer.parseInt(preferences.get(WS_DOWNLOAD_INTERVAL_VALUE, "60"));
-        this.downloadIntervalTimeunit = preferences.get(WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
+        this.downloadIntervalValue = Integer.parseInt(preferences.get(Option.WS_DOWNLOAD_INTERVAL_VALUE, "60"));
+        this.downloadIntervalTimeunit = preferences.get(Option.WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
 
-        this.resolution = preferences.get(WS_RESOLUTION, "1920x1080");
+        this.resolution = preferences.get(Option.WS_RESOLUTION, "1920x1080");
+        this.directoryPath = preferences.get(Option.WS_DOWNLOAD_DIRECTORY, System.getProperty("user.home") + "\\Desktop\\Wallpapers");
 
-        this.isGeneral = Boolean.parseBoolean(preferences.get(WS_IS_GENERAL, "true"));
-        this.isAnime = Boolean.parseBoolean(preferences.get(WS_IS_ANIME, "false"));
-        this.isPeople = Boolean.parseBoolean(preferences.get(WS_IS_PEOPLE, "true"));
-        this.isSFW = Boolean.parseBoolean(preferences.get(WS_IS_SFW, "true"));
-        this.isSketchy = Boolean.parseBoolean(preferences.get(WS_IS_SKETCHY, "false"));
-        this.isNSFW = Boolean.parseBoolean(preferences.get(WS_IS_NSFW, "false"));
-
-        this.directoryPath = preferences.get(WS_DOWNLOAD_DIRECTORY, System.getProperty("user.home") + "\\Desktop\\Wallpapers");
+        Filters.setup(preferences);
 
         File downloadDirectory = new File(this.directoryPath);
         downloadDirectory.mkdirs();
@@ -312,7 +227,10 @@ public class Settings {
 
         // Deserializing JSON might fail for old users as keywords preference value isn't valid JSON for them
         while (true) {
-            String keywordMapAsJson = preferences.get(WS_KEYWORDS, "{\"keywords.abstract\":-1,\"keywords.nature\":-1,\"keywords.space\":-1}");
+            String keywordMapAsJson = preferences.get(Option.WS_KEYWORDS,
+                                                      "{\"ws.keywords.abstract\":-1," +
+                                                      "\"ws.keywords.nature\":-1," +
+                                                      "\"ws.keywords.space\":-1}");
 
             try {
                 this.keywords = mapper.readValue(keywordMapAsJson, Map.class);
@@ -320,12 +238,8 @@ public class Settings {
             } catch (IOException ex) {
 
                 System.out.println("Couldn't deserialize JSON.");
-                preferences.remove(WS_KEYWORDS);
+                preferences.remove(Option.WS_KEYWORDS);
             }
         }
-    }
-
-    private String toNumeral(Boolean input) {
-        return input ? "1" : "0";
     }
 }

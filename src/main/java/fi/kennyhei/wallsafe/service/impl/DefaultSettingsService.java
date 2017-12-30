@@ -3,10 +3,12 @@ package fi.kennyhei.wallsafe.service.impl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import fi.kennyhei.wallsafe.config.Filters;
+import fi.kennyhei.wallsafe.config.Option;
 import fi.kennyhei.wallsafe.service.SettingsService;
 import fi.kennyhei.wallsafe.config.Settings;
-import java.util.ArrayList;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -31,14 +33,14 @@ public class DefaultSettingsService implements SettingsService {
 
         settings.setResolution(resolution);
 
-        this.updatePreference(Settings.WS_RESOLUTION, resolution);
+        this.updatePreference(Option.WS_RESOLUTION, resolution);
         this.buildUrl();
     }
 
     @Override
     public void addKeyword(String keyword) {
 
-        keyword = Settings.WS_KEYWORDS + "." + keyword;
+        keyword = Option.WS_KEYWORDS + "." + keyword;
         Map<String, Integer> keywords = settings.getKeywords();
 
         if (!keywords.containsKey(keyword)) {
@@ -51,7 +53,7 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public void removeKeyword(String keyword) {
 
-        keyword = Settings.WS_KEYWORDS + "." + keyword;
+        keyword = Option.WS_KEYWORDS + "." + keyword;
         Map<String, Integer> keywords = settings.getKeywords();
 
         if (keywords.containsKey(keyword)) {
@@ -80,7 +82,7 @@ public class DefaultSettingsService implements SettingsService {
 
         int index = random.nextInt(keywords.length);
 
-        String keyword = keywords[index].split("\\.")[1];
+        String keyword = keywords[index].split("\\.")[2];
         return keyword;
     }
 
@@ -91,7 +93,7 @@ public class DefaultSettingsService implements SettingsService {
         List<String> keywords = new ArrayList<>();
 
         for (String keyword : keys) {
-            keywords.add(keyword.split("\\.")[1]);
+            keywords.add(keyword.split("\\.")[2]);
         }
 
         return keywords;
@@ -125,7 +127,7 @@ public class DefaultSettingsService implements SettingsService {
     public void setChangeIntervalValue(int value) {
 
         settings.setChangeIntervalValue(value);
-        this.updatePreference(Settings.WS_CHANGE_INTERVAL_VALUE, Integer.toString(value));
+        this.updatePreference(Option.WS_CHANGE_INTERVAL_VALUE, Integer.toString(value));
     }
 
     @Override
@@ -138,7 +140,7 @@ public class DefaultSettingsService implements SettingsService {
     public void setChangeIntervalTimeunit(String value) {
 
         settings.setChangeIntervalTimeunit(value);
-        this.updatePreference(Settings.WS_CHANGE_INTERVAL_TIMEUNIT, value);
+        this.updatePreference(Option.WS_CHANGE_INTERVAL_TIMEUNIT, value);
     }
 
     @Override
@@ -151,7 +153,7 @@ public class DefaultSettingsService implements SettingsService {
     public void setDownloadIntervalValue(int value) {
 
         settings.setDownloadIntervalValue(value);
-        this.updatePreference(Settings.WS_DOWNLOAD_INTERVAL_VALUE, Integer.toString(value));
+        this.updatePreference(Option.WS_DOWNLOAD_INTERVAL_VALUE, Integer.toString(value));
     }
 
     @Override
@@ -164,7 +166,7 @@ public class DefaultSettingsService implements SettingsService {
     public void setDownloadIntervalTimeunit(String value) {
 
         settings.setDownloadIntervalTimeunit(value);
-        this.updatePreference(Settings.WS_DOWNLOAD_INTERVAL_TIMEUNIT, value);
+        this.updatePreference(Option.WS_DOWNLOAD_INTERVAL_TIMEUNIT, value);
     }
 
     @Override
@@ -177,7 +179,7 @@ public class DefaultSettingsService implements SettingsService {
     public void setDirectoryPath(String selectedDirectory) {
 
         settings.setDirectoryPath(selectedDirectory);
-        this.updatePreference(Settings.WS_DOWNLOAD_DIRECTORY, selectedDirectory);
+        this.updatePreference(Option.WS_DOWNLOAD_DIRECTORY, selectedDirectory);
     }
 
     private void updateKeywordsPreference(Map<String, Integer> keywords) {
@@ -185,7 +187,7 @@ public class DefaultSettingsService implements SettingsService {
         try {
 
             String mapAsJson = mapper.writeValueAsString(keywords);
-            this.updatePreference(Settings.WS_KEYWORDS, mapAsJson);
+            this.updatePreference(Option.WS_KEYWORDS, mapAsJson);
 
         } catch (JsonProcessingException ex) {
             System.out.println("Couldn't serialize to JSON.");
@@ -201,7 +203,7 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public void setIndexOfKeyword(String keyword, int index) {
 
-        keyword = Settings.WS_KEYWORDS + "." + keyword;
+        keyword = Option.WS_KEYWORDS + "." + keyword;
 
         Map<String, Integer> keywords = this.settings.getKeywords();
         keywords.put(keyword, index);
@@ -212,7 +214,7 @@ public class DefaultSettingsService implements SettingsService {
     @Override
     public int getIndexOfKeyword(String keyword) {
 
-        keyword = Settings.WS_KEYWORDS + "." + keyword;
+        keyword = Option.WS_KEYWORDS + "." + keyword;
 
         Map<String, Integer> keywords = this.settings.getKeywords();
         return keywords.get(keyword);
@@ -222,28 +224,28 @@ public class DefaultSettingsService implements SettingsService {
     public void setFilter(String text, boolean isSelected) {
         switch (text) {
             case "General":
-                settings.setIsGeneral(isSelected);
-                this.updatePreference(Settings.WS_IS_GENERAL, Boolean.toString(isSelected));
+                Filters.isGeneral(isSelected);
+                this.updatePreference(Option.WS_IS_GENERAL, Boolean.toString(isSelected));
                 break;
             case "Anime":
-                settings.setIsAnime(isSelected);
-                this.updatePreference(Settings.WS_IS_ANIME, Boolean.toString(isSelected));
+                Filters.isAnime(isSelected);
+                this.updatePreference(Option.WS_IS_ANIME, Boolean.toString(isSelected));
                 break;
             case "People":
-                settings.setIsPeople(isSelected);
-                this.updatePreference(Settings.WS_IS_PEOPLE, Boolean.toString(isSelected));
+                Filters.isPeople(isSelected);
+                this.updatePreference(Option.WS_IS_PEOPLE, Boolean.toString(isSelected));
                 break;
             case "SFW":
-                settings.setIsSFW(isSelected);
-                this.updatePreference(Settings.WS_IS_SFW, Boolean.toString(isSelected));
+                Filters.isSFW(isSelected);
+                this.updatePreference(Option.WS_IS_SFW, Boolean.toString(isSelected));
                 break;
             case "Sketchy":
-                settings.setIsSketchy(isSelected);
-                this.updatePreference(Settings.WS_IS_SKETCHY, Boolean.toString(isSelected));
+                Filters.isSketchy(isSelected);
+                this.updatePreference(Option.WS_IS_SKETCHY, Boolean.toString(isSelected));
                 break;
             case "NSFW":
-                settings.setIsNSFW(isSelected);
-                this.updatePreference(Settings.WS_IS_NSFW, Boolean.toString(isSelected));
+                Filters.isNSFW(isSelected);
+                this.updatePreference(Option.WS_IS_NSFW, Boolean.toString(isSelected));
                 break;
         }
     }
@@ -252,17 +254,17 @@ public class DefaultSettingsService implements SettingsService {
     public boolean isFilterSelected(String text) {
         switch (text) {
             case "General":
-                return settings.isGeneral();
+                return Filters.isGeneral();
             case "Anime":
-                return settings.isAnime();
+                return Filters.isAnime();
             case "People":
-                return settings.isPeople();
+                return Filters.isPeople();
             case "SFW":
-                return settings.isSFW();
+                return Filters.isSFW();
             case "Sketchy":
-                return settings.isSketchy();
+                return Filters.isSketchy();
             case "NSFW":
-                return settings.isNSFW();
+                return Filters.isNSFW();
         }
 
         return false;
