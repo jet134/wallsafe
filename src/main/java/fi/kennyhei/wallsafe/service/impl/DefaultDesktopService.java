@@ -255,7 +255,7 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
 
         try {
 
-            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Control Panel\\Desktop", "WallpaperStyle", "6");
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Control Panel\\Desktop", "WallpaperStyle", mode);
             Runtime.getRuntime().exec("RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True");
         } catch (IOException ex) {
             System.out.println("Couldn't change picture position.");
