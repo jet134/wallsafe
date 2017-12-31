@@ -36,16 +36,16 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeWallpaper(String path) {
 
-            System.out.println("Changing wallpaper to: " + path);
-            User32.INSTANCE.SystemParametersInfo(0x0014, 0, path, 1);
+        System.out.println("Changing wallpaper to: " + path);
+        User32.INSTANCE.SystemParametersInfo(0x0014, 0, path, 1);
 
-            String mode = this.settingsService.getDesktopMode();
-            this.updateDesktopMode(mode);
-            /*        SPI.INSTANCE.SystemParametersInfo(
-            new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
-            new WinDef.UINT_PTR(0),
-            path,
-            new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));*/
+        String mode = this.settingsService.getDesktopMode();
+        this.updateDesktopMode(mode);
+        /*        SPI.INSTANCE.SystemParametersInfo(
+        new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
+        new WinDef.UINT_PTR(0),
+        path,
+        new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));*/
     }
 
     @Override
