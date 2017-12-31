@@ -46,6 +46,9 @@ public class Settings {
     private final String baseUrl = "http://alpha.wallhaven.cc/search";
     private String url;
 
+    // WallHaven account information
+    private String credentials;
+
     public static Settings getInstance() {
 
         if (instance == null) {
@@ -147,6 +150,16 @@ public class Settings {
         this.desktopMode = mode;
     }
 
+    public String getCredentials() {
+
+        return credentials;
+    }
+
+    public void setCredentials(String credentials) {
+
+        this.credentials = credentials;
+    }
+
     public Preferences getPreferences() {
 
         return preferences;
@@ -246,6 +259,13 @@ public class Settings {
         this.directoryPath = preferences.get(Option.WS_DOWNLOAD_DIRECTORY, System.getProperty("user.home") + "\\Desktop\\Wallpapers");
 
         Filters.setup(preferences);
+
+        if (this.resolution.equals("All")) {
+            preferences.put(Option.WS_RESOLUTION, "Any");
+            this.resolution = "Any";
+        }
+
+        this.credentials = preferences.get(Option.WS_CREDENTIALS, null);
 
         File downloadDirectory = new File(this.directoryPath);
         downloadDirectory.mkdirs();

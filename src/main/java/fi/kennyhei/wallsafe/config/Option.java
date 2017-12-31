@@ -20,4 +20,6 @@ public class Option {
 
     public static final String WS_KEYWORDS = "ws.keywords";
     public static final String WS_DESKTOP_MODE = "ws.desktop.mode";
+
+    public static String WS_CREDENTIALS = "ws.credentials";
 }

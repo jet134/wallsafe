@@ -42,4 +42,7 @@ public interface SettingsService {
 
     public String getDesktopMode();
     public void setDesktopMode(String mode);
+
+    public void setCredentials(Map<String, char[]> credentials);
+    public String getCredentials();
 }

@@ -7,6 +7,7 @@ import fi.kennyhei.wallsafe.config.Filters;
 import fi.kennyhei.wallsafe.config.Option;
 import fi.kennyhei.wallsafe.service.SettingsService;
 import fi.kennyhei.wallsafe.config.Settings;
+import fi.kennyhei.wallsafe.security.Security;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -288,5 +289,21 @@ public class DefaultSettingsService implements SettingsService {
         }
 
         return false;
+    }
+
+    @Override
+    public void setCredentials(Map<String, char[]> credentials) {
+        try {
+            String encrypted = Security.createEncryptedData(credentials, 2);
+            settings.setCredentials(encrypted);
+
+            this.updatePreference(Option.WS_CREDENTIALS, encrypted);
+        } catch (Exception ex) {}
+    }
+
+    @Override
+    public String getCredentials() {
+
+        return this.settings.getCredentials();
     }
 }

@@ -1,10 +1,13 @@
 package fi.kennyhei.wallsafe.controller;
 
 import fi.kennyhei.wallsafe.App;
+import fi.kennyhei.wallsafe.WSLoginDialog;
 import fi.kennyhei.wallsafe.WallSafeFactory;
 import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
+import fi.kennyhei.wallsafe.service.LoginService;
 import fi.kennyhei.wallsafe.service.SettingsService;
+import fi.kennyhei.wallsafe.service.impl.DefaultLoginService;
 
 import java.io.File;
 import java.net.URL;
@@ -60,6 +63,7 @@ public class MainController implements Initializable {
     private DesktopService desktopService;
     private DownloaderService downloaderService;
     private SettingsService settingsService;
+    private LoginService loginService;
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -68,6 +72,14 @@ public class MainController implements Initializable {
         setDesktopService(WallSafeFactory.getDesktopService());
         setDownloaderService(WallSafeFactory.getDownloaderService());
         setSettingsService(WallSafeFactory.getSettingsService());
+
+        this.loginService = DefaultLoginService.getInstance();
+
+        try {
+            this.loginService.login();
+        } catch (Exception ex) {
+            System.out.println("Couldn't login");
+        }
 
         // Setup interval values
         initializeIntervalValues();
@@ -169,10 +181,22 @@ public class MainController implements Initializable {
 
             filter.setOnAction(event -> {
                 this.settingsService.setFilter(filter.getText(), filter.isSelected());
+
+                if (filter.getText().equals("NSFW") &&
+                    filter.isSelected() &&
+                    !this.loginService.hasCredentials()) {
+
+                    WSLoginDialog.create(this.loginService);
+                }
             });
 
             String text = filter.getText();
             boolean isSelected = this.settingsService.isFilterSelected(text);
+
+            if (filter.getText().equals("NSFW") && !this.loginService.hasCredentials()) {
+                filter.setSelected(false);
+                continue;
+            }
 
             filter.setSelected(isSelected);
         }

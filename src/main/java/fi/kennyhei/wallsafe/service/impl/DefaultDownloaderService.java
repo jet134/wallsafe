@@ -3,6 +3,7 @@ package fi.kennyhei.wallsafe.service.impl;
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDownloadService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.config.Settings;
+import fi.kennyhei.wallsafe.service.LoginService;
 
 import java.io.File;
 import java.io.IOException;
@@ -25,9 +26,12 @@ import org.jsoup.select.Elements;
 
 public class DefaultDownloaderService extends AbstractBackgroundService implements DownloaderService {
 
+    private final LoginService loginService;
+
     public DefaultDownloaderService() {
 
         super(new ScheduledDownloadService(), new DefaultSettingsService());
+        this.loginService = DefaultLoginService.getInstance();
     }
 
     @Override
@@ -49,6 +53,7 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
 
                 System.out.println(settingsService.url());
                 Response response = Jsoup.connect(settingsService.url())
+                                         .cookies(loginService.getCookies())
                                          .userAgent(Settings.USER_AGENT)
                                          .timeout(10000)
                                          .execute();
@@ -72,12 +77,15 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
     private String getRandomImageLink(Document document) throws IOException {
 
         Elements links = document.select("a.preview");
+        System.out.println(links.size());
+
         Random r = new Random();
 
         Element link = links.get(r.nextInt(links.size()));
 
         System.out.println(link.attr("abs:href"));
         Response response = Jsoup.connect(link.attr("abs:href"))
+                                 .cookies(loginService.getCookies())
                                  .userAgent(Settings.USER_AGENT)
                                  .timeout(10000)
                                  .execute();
