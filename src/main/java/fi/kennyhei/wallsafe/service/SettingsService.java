@@ -9,6 +9,7 @@ public interface SettingsService {
     public void buildUrl();
     public void buildUrl(String keyword);
 
+    public String getResolution();
     public void setResolution(String resolution);
 
     public void addKeyword(String keyword);
@@ -38,4 +39,7 @@ public interface SettingsService {
 
     public void setFilter(String text, boolean isSelected);
     public boolean isFilterSelected(String text);
+
+    public String getDesktopMode();
+    public void setDesktopMode(String mode);
 }

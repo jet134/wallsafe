@@ -1,11 +1,14 @@
 package fi.kennyhei.wallsafe.service.impl;
 
+import com.sun.jna.platform.win32.Advapi32Util;
+import com.sun.jna.platform.win32.WinReg;
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDesktopService;
 import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.util.User32;
 
 import java.io.File;
 import java.io.FileFilter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,13 +36,16 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeWallpaper(String path) {
 
-        System.out.println("Changing wallpaper to: " + path);
-        User32.INSTANCE.SystemParametersInfo(0x0014, 0, path, 1);
-/*        SPI.INSTANCE.SystemParametersInfo(
-                new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
-                new WinDef.UINT_PTR(0),
-                path,
-                new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));*/
+            System.out.println("Changing wallpaper to: " + path);
+            User32.INSTANCE.SystemParametersInfo(0x0014, 0, path, 1);
+
+            String mode = this.settingsService.getDesktopMode();
+            this.updateDesktopMode(mode);
+            /*        SPI.INSTANCE.SystemParametersInfo(
+            new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
+            new WinDef.UINT_PTR(0),
+            path,
+            new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));*/
     }
 
     @Override
@@ -149,6 +155,14 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     private void changeFromHistory() {
 
         this.currentFilePath = this.history.get(this.historyIndex);
+
+        File file = new File(this.currentFilePath);
+
+        if (!file.exists()) {
+            this.deleteWallpaper();
+            return;
+        }
+
         this.changeWallpaper(this.currentFilePath);
     }
 
@@ -208,5 +222,43 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
 
         this.setInterval(interval, timeUnit);
         this.scheduledService.restart();
+    }
+
+    @Override
+    public void updateDesktopMode(String mode) {
+
+        /* WallpaperStyle in CMD:
+           REG ADD "HKCU\Control Panel\Desktop" /V WallpaperStyle /T REG_SZ /F /D 6
+           RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True
+
+           0: Image is centered
+           2: Image is stretched
+           6: Image is resized to fit the screen while maintaining aspect ratio
+           10: Image is resized and cropped to fill the screen while maintaining aspect ratio
+        */
+        this.settingsService.setDesktopMode(mode);
+
+        switch(mode) {
+            case "Fill":
+                mode = "10";
+                break;
+            case "Fit":
+                mode = "6";
+                break;
+            case "Stretch":
+                mode = "2";
+                break;
+            case "Center":
+                mode = "0";
+                break;
+        }
+
+        try {
+
+            Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Control Panel\\Desktop", "WallpaperStyle", "6");
+            Runtime.getRuntime().exec("RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True");
+        } catch (IOException ex) {
+            System.out.println("Couldn't change picture position.");
+        }
     }
 }

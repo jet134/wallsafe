@@ -53,18 +53,18 @@
         <ComboBox fx:id="resolutionComboBox" prefWidth="140.0" promptText="Choose" GridPane.columnIndex="2" GridPane.rowIndex="3">
             <items>
                 <FXCollections fx:factory="observableArrayList">
-                    <String fx:value="1024x768" />
-                    <String fx:value="1280x800" />
-                    <String fx:value="1280x960" />
-                    <String fx:value="1440x900" />
-                    <String fx:value="1600x900" />
-                    <String fx:value="1280x1024" />
-                    <String fx:value="1600x1200" />
-                    <String fx:value="1920x1080" />
-                    <String fx:value="1920x1200" />
-                    <String fx:value="2560x1440" />
+                    <String fx:value="Any" />
                     <String fx:value="2560x1600" />
-                    <String fx:value="All" />
+                    <String fx:value="2560x1440" />
+                    <String fx:value="1920x1200" />
+                    <String fx:value="1920x1080" />
+                    <String fx:value="1600x1200" />
+                    <String fx:value="1280x1024" />
+                    <String fx:value="1600x900" />
+                    <String fx:value="1440x900" />
+                    <String fx:value="1280x960" />
+                    <String fx:value="1280x800" />
+                    <String fx:value="1024x768" />
                 </FXCollections>
             </items>
         </ComboBox>

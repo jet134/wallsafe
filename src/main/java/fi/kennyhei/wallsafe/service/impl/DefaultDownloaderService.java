@@ -25,8 +25,6 @@ import org.jsoup.select.Elements;
 
 public class DefaultDownloaderService extends AbstractBackgroundService implements DownloaderService {
 
-    private String keyword;
-
     public DefaultDownloaderService() {
 
         super(new ScheduledDownloadService(), new DefaultSettingsService());
@@ -36,11 +34,10 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
     public void download() {
 
         // TODO: Add option for user to use keywords or download a completely random image
-        this.keyword = this.settingsService.getRandomKeyword();
+        final String keyword = this.settingsService.getRandomKeyword();
 
-        if (this.keyword == null) {
+        if (keyword == null) {
             this.settingsService.buildUrl();
-            this.keyword = "random";
         } else {
             this.settingsService.buildUrl(keyword);
         }
@@ -62,7 +59,7 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
                 String url = getRandomImageLink(doc);
                 String filename = parseFilename(url);
 
-                downloadImage(url, filename);
+                downloadImage(url, keyword, filename);
                 return null;
             }
         };
@@ -112,10 +109,10 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         return filename;
     }
 
-    private void downloadImage(String url, String filename) throws IOException {
+    private void downloadImage(String url, String keyword, String filename) throws IOException {
 
-        createKeywordDirectory(this.keyword);
-        String path = this.settingsService.getDirectoryPath() + "\\" + this.keyword + "\\" + filename;
+        createKeywordDirectory(keyword);
+        String path = this.settingsService.getDirectoryPath() + "\\" + keyword + "\\" + filename;
 
         System.out.println(path);
         System.out.println();

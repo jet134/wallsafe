@@ -29,6 +29,12 @@ public class DefaultSettingsService implements SettingsService {
     }
 
     @Override
+    public String getResolution() {
+
+        return settings.getResolution();
+    }
+
+    @Override
     public void setResolution(String resolution) {
 
         settings.setResolution(resolution);
@@ -75,7 +81,7 @@ public class DefaultSettingsService implements SettingsService {
         Set<String> keys = this.settings.getKeywords().keySet();
 
         if (keys.isEmpty()) {
-            return null;
+            return "random";
         }
 
         String[] keywords = keys.toArray(new String[keys.size()]);
@@ -180,6 +186,20 @@ public class DefaultSettingsService implements SettingsService {
 
         settings.setDirectoryPath(selectedDirectory);
         this.updatePreference(Option.WS_DOWNLOAD_DIRECTORY, selectedDirectory);
+    }
+
+
+    @Override
+    public String getDesktopMode() {
+
+        return settings.getDesktopMode();
+    }
+
+    @Override
+    public void setDesktopMode(String mode) {
+
+        settings.setDesktopMode(mode);
+        this.updatePreference(Option.WS_DESKTOP_MODE, mode);
     }
 
     private void updateKeywordsPreference(Map<String, Integer> keywords) {

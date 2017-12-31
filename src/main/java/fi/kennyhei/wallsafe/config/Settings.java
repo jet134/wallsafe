@@ -2,6 +2,8 @@ package fi.kennyhei.wallsafe.config;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.io.File;
 import java.io.IOException;
 import java.net.URLEncoder;
@@ -21,6 +23,11 @@ public class Settings {
 
     // Resolution of the wallpaper, defaults to user's native resolution
     private String resolution;
+
+    // Defines how to position the wallpaper on screen
+    // NOTE: User cannot configure this option because the operation
+    // for setting the picture position in Windows is not reliable/instant
+    private String desktopMode;
 
     // Keywords for searching wallpapers
     private Map<String, Integer> keywords;
@@ -130,6 +137,16 @@ public class Settings {
         this.downloadIntervalTimeunit = downloadIntervalTimeunit;
     }
 
+    public String getDesktopMode() {
+
+        return desktopMode;
+    }
+
+    public void setDesktopMode(String mode) {
+
+        this.desktopMode = mode;
+    }
+
     public Preferences getPreferences() {
 
         return preferences;
@@ -150,7 +167,7 @@ public class Settings {
 
         String categories = this.categoriesValue();
         String purity = this.purityValue();
-        String resolutionParam = resolution.equals("all") ? "" : resolution;
+        String resolutionParam = resolution.equals("Any") ? "" : resolution;
 
         sb.append("?")
           .append("q=")
@@ -175,7 +192,7 @@ public class Settings {
 
         String categories = this.categoriesValue();
         String purity = this.purityValue();
-        String resolutionParam = resolution.equals("all") ? "" : resolution;
+        String resolutionParam = resolution.equals("Any") ? "" : resolution;
 
         sb.append("?")
           .append("categories=")
@@ -217,7 +234,15 @@ public class Settings {
         this.downloadIntervalValue = Integer.parseInt(preferences.get(Option.WS_DOWNLOAD_INTERVAL_VALUE, "60"));
         this.downloadIntervalTimeunit = preferences.get(Option.WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
 
-        this.resolution = preferences.get(Option.WS_RESOLUTION, "1920x1080");
+        // Find out native resolution
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        int width = (int) screenSize.getWidth();
+        int height = (int) screenSize.getHeight();
+
+        String preferredResolution = String.valueOf(width) + "x" + String.valueOf(height);
+
+        this.resolution = preferences.get(Option.WS_RESOLUTION, preferredResolution);
+        this.desktopMode = preferences.get(Option.WS_DESKTOP_MODE, "Fit");
         this.directoryPath = preferences.get(Option.WS_DOWNLOAD_DIRECTORY, System.getProperty("user.home") + "\\Desktop\\Wallpapers");
 
         Filters.setup(preferences);

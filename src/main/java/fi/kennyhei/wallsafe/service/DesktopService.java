@@ -7,4 +7,5 @@ public interface DesktopService extends BackgroundService {
     public void deleteWallpaper();
     public void changeToNext();
     public void changeToPrevious();
+    public void updateDesktopMode(String mode);
 }

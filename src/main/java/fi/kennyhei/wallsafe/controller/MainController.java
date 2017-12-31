@@ -6,8 +6,6 @@ import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
 import fi.kennyhei.wallsafe.service.SettingsService;
 
-import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.io.File;
 import java.net.URL;
 import java.util.Optional;
@@ -89,15 +87,9 @@ public class MainController implements Initializable {
 
         this.resolutionComboBox.setOnAction(event -> onResolution());
 
-        // Find out native resolution
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        int width = (int) screenSize.getWidth();
-        int height = (int) screenSize.getHeight();
-
         // Set resolution
-        String resolution = String.valueOf(width) + "x" + String.valueOf(height);
+        String resolution = this.settingsService.getResolution();
         this.resolutionComboBox.getSelectionModel().select(resolution);
-        this.settingsService.setResolution(resolution);
 
         // Initialize background tasks
         this.downloaderService.start();
