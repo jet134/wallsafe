@@ -21,7 +21,6 @@ public class WSLoginDialog {
     private static final String HEADER_TEXT = "Login to WallHaven";
     private static final String BUTTON_TEXT = "Login";
 
-
     public static void create(LoginService loginService) {
 
         // Create the custom dialog.
