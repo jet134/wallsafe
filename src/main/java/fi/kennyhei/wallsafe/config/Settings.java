@@ -150,6 +150,7 @@ public class Settings {
 
         String categories = this.categoriesValue();
         String purity = this.purityValue();
+        String resolutionParam = resolution.equals("all") ? "" : resolution;
 
         sb.append("?")
           .append("q=")
@@ -160,7 +161,7 @@ public class Settings {
           .append("purity=")
           .append(purity)
           .append("resolutions=")
-          .append(resolution)
+          .append(resolutionParam)
           .append("&")
           .append("sorting=random&")
           .append("order=desc");
@@ -174,6 +175,7 @@ public class Settings {
 
         String categories = this.categoriesValue();
         String purity = this.purityValue();
+        String resolutionParam = resolution.equals("all") ? "" : resolution;
 
         sb.append("?")
           .append("categories=")
@@ -181,7 +183,7 @@ public class Settings {
           .append("purity=")
           .append(purity)
           .append("resolutions=")
-          .append(resolution)
+          .append(resolutionParam)
           .append("&")
           .append("sorting=random&")
           .append("order=desc");

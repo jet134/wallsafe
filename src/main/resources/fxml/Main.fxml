@@ -64,6 +64,7 @@
                     <String fx:value="1920x1200" />
                     <String fx:value="2560x1440" />
                     <String fx:value="2560x1600" />
+                    <String fx:value="All" />
                 </FXCollections>
             </items>
         </ComboBox>

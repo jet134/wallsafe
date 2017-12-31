@@ -1,10 +1,8 @@
 package fi.kennyhei.wallsafe.service.impl;
 
-import com.sun.jna.platform.win32.WinDef;
-
 import fi.kennyhei.wallsafe.concurrent.service.ScheduledDesktopService;
-import fi.kennyhei.wallsafe.util.SPI;
 import fi.kennyhei.wallsafe.service.DesktopService;
+import fi.kennyhei.wallsafe.util.User32;
 
 import java.io.File;
 import java.io.FileFilter;
@@ -35,11 +33,13 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeWallpaper(String path) {
 
-        SPI.INSTANCE.SystemParametersInfo(
+        System.out.println("Changing wallpaper to: " + path);
+        User32.INSTANCE.SystemParametersInfo(0x0014, 0, path, 1);
+/*        SPI.INSTANCE.SystemParametersInfo(
                 new WinDef.UINT_PTR(SPI.SPI_SETDESKWALLPAPER),
                 new WinDef.UINT_PTR(0),
                 path,
-                new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));
+                new WinDef.UINT_PTR(SPI.SPIF_UPDATEINIFILE | SPI.SPIF_SENDWININICHANGE));*/
     }
 
     @Override
@@ -108,8 +108,6 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         this.historyIndex = this.history.size() - 1;
 
         this.changeWallpaper(path);
-
-        this.settingsService.setIndexOfKeyword(keyword, index);
     }
 
     private String selectWallpaper(int index, String keyword) {
@@ -139,6 +137,8 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         if (index < 0) {
             index = wallpapers.length - 1;
         }
+
+        this.settingsService.setIndexOfKeyword(keyword, index);
 
         Arrays.sort(wallpapers, LastModifiedFileComparator.LASTMODIFIED_COMPARATOR);
         path += "\\" + wallpapers[index].getName();
