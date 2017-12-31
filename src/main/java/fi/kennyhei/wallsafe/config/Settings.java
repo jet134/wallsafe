@@ -244,7 +244,7 @@ public class Settings {
         this.changeIntervalValue = Integer.parseInt(preferences.get(Option.WS_CHANGE_INTERVAL_VALUE, "60"));
         this.changeIntervalTimeunit = preferences.get(Option.WS_CHANGE_INTERVAL_TIMEUNIT, "seconds");
 
-        this.downloadIntervalValue = Integer.parseInt(preferences.get(Option.WS_DOWNLOAD_INTERVAL_VALUE, "60"));
+        this.downloadIntervalValue = Integer.parseInt(preferences.get(Option.WS_DOWNLOAD_INTERVAL_VALUE, "20"));
         this.downloadIntervalTimeunit = preferences.get(Option.WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
 
         // Find out native resolution
