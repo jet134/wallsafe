@@ -16,9 +16,6 @@ import org.apache.commons.codec.binary.Base64;
 
 public class Security {
 
-    // These will be used as the source of the configuration file's stored attributes.
-    private static final Map<String, char[]> SECURE_ATTRIBUTES = new HashMap<>();
-
     // Ciphering (encryption and decryption) password/key.
     private static final char[] PASSWORD = "Unauthorized_Personel_Is_Unauthorized".toCharArray();
 
@@ -26,53 +23,6 @@ public class Security {
     private static final byte[] SALT = {
         (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,
         (byte) 0xde, (byte) 0x33, (byte) 0x10, (byte) 0x12,};
-
-    public static void main(String[] args) throws GeneralSecurityException, FileNotFoundException, IOException {
-
-        /*
-         * Set secure attributes.
-         * NOTE: Ignore the use of Strings here, it's being used for convenience only.
-         * In real implementations, JPasswordField.getPassword() would send the arrays directly.
-         */
-        SECURE_ATTRIBUTES.put("Username", "Hypothetical".toCharArray());
-        SECURE_ATTRIBUTES.put("Password", "LetMePass_Word".toCharArray());
-
-        /*
-         * For demosntration purposes, I make the three encryption layer-levels I mention.
-         * To leave no doubt the code works, I use real file IO.
-         */
-        // File without encryption.
-        String noEncryption = createEncryptedData(SECURE_ATTRIBUTES, 0);
-
-        // File with encryption to secure attributes only.
-        String encrypted = createEncryptedData(SECURE_ATTRIBUTES, 1);
-
-        // File completely encrypted, including re-encryption of secure attributes.
-        String encryptedTwo = createEncryptedData(SECURE_ATTRIBUTES, 2);
-
-        /*
-         * Show contents of all three encryption levels, from file.
-         */
-        System.out.println("NO ENCRYPTION: \n" + noEncryption + "\n\n\n");
-        System.out.println("SINGLE LAYER ENCRYPTION: \n" + encrypted + "\n\n\n");
-        System.out.println("DOUBLE LAYER ENCRYPTION: \n" + encryptedTwo + "\n\n\n");
-
-        /*
-         * Decryption is demonstrated with the Double-Layer encryption file.
-         */
-
-        // Decrypt first layer. (file content) (REMEMBER: Layers are in reverse order from writing).
-        String decryptedContent = decrypt(encryptedTwo);
-        System.out.println("READ: [first layer decrypted]\n" + decryptedContent + "\n\n\n");
-
-        // Decrypt second layer (secure data).
-        for (String line : decryptedContent.split("\n")) {
-            String[] pair = line.split(": ", 2);
-            if (pair[0].equalsIgnoreCase("Username") || pair[0].equalsIgnoreCase("Password")) {
-                System.out.println("Decrypted: " + pair[0] + ": " + decrypt(pair[1]));
-            }
-        }
-    }
 
     private static String encrypt(byte[] property) throws GeneralSecurityException {
         SecretKeyFactory keyFactory = SecretKeyFactory.getInstance("PBEWithMD5AndDES");
