@@ -157,8 +157,8 @@ public class DownloaderService extends AbstractBackgroundService implements Back
     @Override
     public void start() {
 
-        int interval = this.settingsService.getDownloadIntervalValue();
-        String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
+        int interval = this.settingsService.getIntervalValue("download");
+        String timeUnit = this.settingsService.getIntervalTimeunit("download");
 
         this.setInterval(interval, timeUnit);
         this.scheduledService.restart();
@@ -168,8 +168,8 @@ public class DownloaderService extends AbstractBackgroundService implements Back
     @Override
     public void updateInterval() {
 
-        int interval = this.settingsService.getDownloadIntervalValue();
-        String timeUnit = this.settingsService.getDownloadIntervalTimeunit();
+        int interval = this.settingsService.getIntervalValue("download");
+        String timeUnit = this.settingsService.getIntervalTimeunit("download");
 
         this.setInterval(interval, timeUnit);
         this.scheduledService.restart();

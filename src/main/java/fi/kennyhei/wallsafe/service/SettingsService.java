@@ -2,6 +2,8 @@ package fi.kennyhei.wallsafe.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import fi.kennyhei.wallsafe.config.Change;
+import fi.kennyhei.wallsafe.config.Download;
 
 import fi.kennyhei.wallsafe.config.Filters;
 import fi.kennyhei.wallsafe.config.Option;
@@ -22,12 +24,18 @@ public class SettingsService {
     private static final Logger LOG = Logger.getLogger(SettingsService.class);
 
     private final Settings settings;
+    private final Download downloadAction;
+    private final Change changeAction;
+
     private final ObjectMapper mapper;
     private final Random random;
 
     public SettingsService() {
 
         this.settings = Settings.getInstance();
+        this.downloadAction = this.settings.getDownloadAction();
+        this.changeAction = this.settings.getChangeAction();
+
         this.mapper = new ObjectMapper();
         this.random = new Random();
     }
@@ -120,48 +128,60 @@ public class SettingsService {
         return settings.getUrl();
     }
 
-    public int getChangeIntervalValue() {
+    public int getIntervalValue(String actionType) {
 
-        return settings.getChangeIntervalValue();
+        int value = 60;
+
+        if (actionType.equals("download")) {
+            return downloadAction.getIntervalValue();
+        }
+
+        if (actionType.equals("change")) {
+            return changeAction.getIntervalValue();
+        }
+
+        return value;
     }
 
-    public void setChangeIntervalValue(int value) {
+    public void setIntervalValue(String actionType, int value) {
 
-        settings.setChangeIntervalValue(value);
-        this.updatePreference(Option.WS_CHANGE_INTERVAL_VALUE, Integer.toString(value));
+        if (actionType.equals("download")) {
+            downloadAction.setIntervalValue(value);
+            downloadAction.saveSettings();
+        }
+
+        if (actionType.equals("change")) {
+            changeAction.setIntervalValue(value);
+            changeAction.saveSettings();
+        }
     }
 
-    public String getChangeIntervalTimeunit() {
+    public String getIntervalTimeunit(String actionType) {
 
-        return settings.getChangeIntervalTimeunit();
+        String timeunit = "hours";
+
+        if (actionType.equals("download")) {
+            return downloadAction.getIntervalTimeunit();
+        }
+
+        if (actionType.equals("change")) {
+            return changeAction.getIntervalTimeunit();
+        }
+
+        return timeunit;
     }
 
-    public void setChangeIntervalTimeunit(String value) {
+    public void setIntervalTimeunit(String actionType, String value) {
 
-        settings.setChangeIntervalTimeunit(value);
-        this.updatePreference(Option.WS_CHANGE_INTERVAL_TIMEUNIT, value);
-    }
+        if (actionType.equals("download")) {
+            downloadAction.setIntervalTimeunit(value);
+            downloadAction.saveSettings();
+        }
 
-    public int getDownloadIntervalValue() {
-
-        return settings.getDownloadIntervalValue();
-    }
-
-    public void setDownloadIntervalValue(int value) {
-
-        settings.setDownloadIntervalValue(value);
-        this.updatePreference(Option.WS_DOWNLOAD_INTERVAL_VALUE, Integer.toString(value));
-    }
-
-    public String getDownloadIntervalTimeunit() {
-
-        return settings.getDownloadIntervalTimeunit();
-    }
-
-    public void setDownloadIntervalTimeunit(String value) {
-
-        settings.setDownloadIntervalTimeunit(value);
-        this.updatePreference(Option.WS_DOWNLOAD_INTERVAL_TIMEUNIT, value);
+        if (actionType.equals("change")) {
+            changeAction.setIntervalTimeunit(value);
+            changeAction.saveSettings();
+        }
     }
 
     public String getDirectoryPath() {

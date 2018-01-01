@@ -115,18 +115,18 @@ public class MainController implements Initializable {
 
         String interval;
 
-        interval = Integer.toString(this.settingsService.getChangeIntervalValue());
+        interval = Integer.toString(this.settingsService.getIntervalValue("change"));
         this.changeIntervalTextField.setText(interval);
 
-        interval = Integer.toString(this.settingsService.getDownloadIntervalValue());
+        interval = Integer.toString(this.settingsService.getIntervalValue("download"));
         this.downloadIntervalTextField.setText(interval);
 
         String timeUnit;
 
-        timeUnit = this.settingsService.getChangeIntervalTimeunit();
+        timeUnit = this.settingsService.getIntervalTimeunit("change");
         this.changeIntervalComboBox.setValue(timeUnit);
 
-        timeUnit = this.settingsService.getDownloadIntervalTimeunit();
+        timeUnit = this.settingsService.getIntervalTimeunit("download");
         this.downloadIntervalComboBox.setValue(timeUnit);
     }
 
@@ -221,13 +221,13 @@ public class MainController implements Initializable {
 
         if (intervalTextField.getId().equals("changeIntervalTextField")) {
 
-            this.settingsService.setChangeIntervalValue(interval);
+            this.settingsService.setIntervalValue("change", interval);
             this.desktopService.updateInterval();
         }
 
         if (intervalTextField.getId().equals("downloadIntervalTextField")) {
 
-            this.settingsService.setDownloadIntervalValue(interval);
+            this.settingsService.setIntervalValue("download", interval);
             this.downloaderService.updateInterval();
         }
     }
@@ -238,13 +238,13 @@ public class MainController implements Initializable {
 
         if (intervalComboBox.getId().equals("changeIntervalComboBox")) {
 
-            this.settingsService.setChangeIntervalTimeunit(timeUnit);
+            this.settingsService.setIntervalTimeunit("change", timeUnit);
             this.desktopService.updateInterval();
         }
 
         if (intervalComboBox.getId().equals("downloadIntervalComboBox")) {
 
-            this.settingsService.setDownloadIntervalTimeunit(timeUnit);
+            this.settingsService.setIntervalTimeunit("download", timeUnit);
             this.downloaderService.updateInterval();
         }
     }

@@ -39,12 +39,8 @@ public class Settings {
     // Download directory
     private String directoryPath;
 
-    // Interval settings
-    private int changeIntervalValue;
-    private String changeIntervalTimeunit;
-
-    private int downloadIntervalValue;
-    private String downloadIntervalTimeunit;
+    private final Download downloadAction;
+    private final Change changeAction;
 
     // Base URL where wallpapers are downloaded from
     private final String baseUrl = "http://alpha.wallhaven.cc/search";
@@ -66,6 +62,8 @@ public class Settings {
 
         // Initialize preferences
         this.preferences = Preferences.userRoot().node(this.getClass().getName());
+        this.downloadAction = new Download(this.preferences);
+        this.changeAction = new Change(this.preferences);
 
         // Load user preferences
         this.loadPreferences();
@@ -104,44 +102,14 @@ public class Settings {
         this.directoryPath = directoryPath;
     }
 
-    public int getChangeIntervalValue() {
+    public Download getDownloadAction() {
 
-        return changeIntervalValue;
+        return downloadAction;
     }
 
-    public void setChangeIntervalValue(int changeIntervalValue) {
+    public Change getChangeAction() {
 
-        this.changeIntervalValue = changeIntervalValue;
-    }
-
-    public String getChangeIntervalTimeunit() {
-
-        return changeIntervalTimeunit;
-    }
-
-    public void setChangeIntervalTimeunit(String changeIntervalTimeunit) {
-
-        this.changeIntervalTimeunit = changeIntervalTimeunit;
-    }
-
-    public int getDownloadIntervalValue() {
-
-        return downloadIntervalValue;
-    }
-
-    public void setDownloadIntervalValue(int downloadIntervalValue) {
-
-        this.downloadIntervalValue = downloadIntervalValue;
-    }
-
-    public String getDownloadIntervalTimeunit() {
-
-        return downloadIntervalTimeunit;
-    }
-
-    public void setDownloadIntervalTimeunit(String downloadIntervalTimeunit) {
-
-        this.downloadIntervalTimeunit = downloadIntervalTimeunit;
+        return changeAction;
     }
 
     public String getDesktopMode() {
@@ -245,11 +213,8 @@ public class Settings {
 
     private void loadPreferences() {
 
-        this.changeIntervalValue = Integer.parseInt(preferences.get(Option.WS_CHANGE_INTERVAL_VALUE, "60"));
-        this.changeIntervalTimeunit = preferences.get(Option.WS_CHANGE_INTERVAL_TIMEUNIT, "seconds");
-
-        this.downloadIntervalValue = Integer.parseInt(preferences.get(Option.WS_DOWNLOAD_INTERVAL_VALUE, "20"));
-        this.downloadIntervalTimeunit = preferences.get(Option.WS_DOWNLOAD_INTERVAL_TIMEUNIT, "seconds");
+        this.changeAction.loadSettings();
+        this.downloadAction.loadSettings();
 
         // Find out native resolution
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

@@ -207,8 +207,8 @@ public class DesktopService extends AbstractBackgroundService implements Backgro
 
         this.scheduledService = new ScheduledDesktopService();
 
-        int interval = this.settingsService.getChangeIntervalValue();
-        String timeUnit = this.settingsService.getChangeIntervalTimeunit();
+        int interval = this.settingsService.getIntervalValue("change");
+        String timeUnit = this.settingsService.getIntervalTimeunit("change");
 
         this.setInterval(interval, timeUnit);
         this.scheduledService.restart();
@@ -218,8 +218,8 @@ public class DesktopService extends AbstractBackgroundService implements Backgro
     @Override
     public void updateInterval() {
 
-        int interval = this.settingsService.getChangeIntervalValue();
-        String timeUnit = this.settingsService.getChangeIntervalTimeunit();
+        int interval = this.settingsService.getIntervalValue("change");
+        String timeUnit = this.settingsService.getIntervalTimeunit("change");
 
         this.setInterval(interval, timeUnit);
         this.scheduledService.restart();
