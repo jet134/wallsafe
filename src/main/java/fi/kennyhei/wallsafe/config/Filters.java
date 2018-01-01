@@ -1,4 +1,3 @@
-
 package fi.kennyhei.wallsafe.config;
 
 import java.util.prefs.Preferences;

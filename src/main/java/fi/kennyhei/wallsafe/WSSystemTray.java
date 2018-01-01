@@ -18,6 +18,7 @@ import java.util.Map;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+
 import org.apache.log4j.Logger;
 
 /* Create system tray UI here and logic is in the TrayController */

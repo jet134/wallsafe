@@ -1,24 +1,24 @@
-package fi.kennyhei.wallsafe.concurrent.service;
+package fi.kennyhei.wallsafe.service.concurrent;
 
 import fi.kennyhei.wallsafe.WallSafeFactory;
-import fi.kennyhei.wallsafe.service.DesktopService;
+import fi.kennyhei.wallsafe.service.DownloaderService;
 
 import javafx.concurrent.ScheduledService;
 import javafx.concurrent.Task;
 
-public class ScheduledDesktopService extends ScheduledService {
+public class ScheduledDownloadService extends ScheduledService {
 
     @Override
     protected Task createTask() {
 
-        DesktopService desktopService = WallSafeFactory.getDesktopService();
+        DownloaderService downloaderService = WallSafeFactory.getDownloaderService();
 
         return new Task<Void>() {
 
             @Override
             protected Void call() throws Exception {
 
-                desktopService.changeToNext();
+                downloaderService.download();
                 return null;
             }
         };

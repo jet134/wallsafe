@@ -1,6 +1,4 @@
-package fi.kennyhei.wallsafe.service.impl;
-
-import fi.kennyhei.wallsafe.service.SettingsService;
+package fi.kennyhei.wallsafe.service;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

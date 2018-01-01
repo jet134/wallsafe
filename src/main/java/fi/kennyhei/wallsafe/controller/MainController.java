@@ -5,9 +5,8 @@ import fi.kennyhei.wallsafe.WSLoginDialog;
 import fi.kennyhei.wallsafe.WallSafeFactory;
 import fi.kennyhei.wallsafe.service.DesktopService;
 import fi.kennyhei.wallsafe.service.DownloaderService;
-import fi.kennyhei.wallsafe.service.LoginService;
 import fi.kennyhei.wallsafe.service.SettingsService;
-import fi.kennyhei.wallsafe.service.impl.DefaultLoginService;
+import fi.kennyhei.wallsafe.service.LoginService;
 
 import java.io.File;
 import java.net.URL;
@@ -77,7 +76,7 @@ public class MainController implements Initializable {
         setDownloaderService(WallSafeFactory.getDownloaderService());
         setSettingsService(WallSafeFactory.getSettingsService());
 
-        this.loginService = DefaultLoginService.getInstance();
+        this.loginService = LoginService.getInstance();
 
         try {
             this.loginService.login();

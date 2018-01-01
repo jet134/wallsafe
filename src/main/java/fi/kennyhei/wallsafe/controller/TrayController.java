@@ -3,7 +3,6 @@ package fi.kennyhei.wallsafe.controller;
 import fi.kennyhei.wallsafe.WSSystemTray;
 import fi.kennyhei.wallsafe.WallSafeFactory;
 import fi.kennyhei.wallsafe.service.DesktopService;
-import fi.kennyhei.wallsafe.service.DownloaderService;
 
 import java.awt.MenuItem;
 import java.awt.SystemTray;
@@ -17,7 +16,6 @@ public class TrayController {
 
     // Services
     private final DesktopService desktopService;
-    private final DownloaderService downloaderService;
 
     // System tray
     private final WSSystemTray systemTray;
@@ -25,9 +23,7 @@ public class TrayController {
     public TrayController(WSSystemTray systemTray) {
 
         this.systemTray = systemTray;
-
         this.desktopService = WallSafeFactory.getDesktopService();
-        this.downloaderService = WallSafeFactory.getDownloaderService();
 
         this.initialize();
     }
