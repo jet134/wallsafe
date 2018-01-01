@@ -36,7 +36,7 @@ public class DesktopService extends AbstractBackgroundService implements Backgro
         this.history = new ArrayList<>();
     }
 
-    public void changeWallpaper(String path) {
+    private void changeWallpaper(String path) {
 
         LOG.info("Changing wallpaper to: " + path + "\n");
         User32.INSTANCE.SystemParametersInfo(0x0014, 0, path, 1);
@@ -225,7 +225,7 @@ public class DesktopService extends AbstractBackgroundService implements Backgro
         this.scheduledService.restart();
     }
 
-    public void updateDesktopMode(String mode) {
+    private void updateDesktopMode(String mode) {
 
         /* WallpaperStyle in CMD:
            REG ADD "HKCU\Control Panel\Desktop" /V WallpaperStyle /T REG_SZ /F /D 6
