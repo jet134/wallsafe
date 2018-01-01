@@ -10,7 +10,11 @@ import java.net.URLEncoder;
 import java.util.Map;
 import java.util.prefs.Preferences;
 
+import org.apache.log4j.Logger;
+
 public class Settings {
+
+    private static final Logger LOG = Logger.getLogger(Settings.class);
 
     // User-Agent header
     public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36";
@@ -284,7 +288,7 @@ public class Settings {
                 break;
             } catch (IOException ex) {
 
-                System.out.println("Couldn't deserialize JSON.");
+                LOG.info("Couldn't deserialize JSON.");
                 preferences.remove(Option.WS_KEYWORDS);
             }
         }

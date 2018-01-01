@@ -16,8 +16,11 @@ import java.util.Map;
 
 import org.apache.commons.io.comparator.LastModifiedFileComparator;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
+import org.apache.log4j.Logger;
 
 public class DefaultDesktopService extends AbstractBackgroundService implements DesktopService {
+
+    private static final Logger LOG = Logger.getLogger(DefaultDesktopService.class);
 
     // Contains filepaths for all the wallpapers user has used as desktop background
     private final List<String> history;
@@ -36,7 +39,7 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
     @Override
     public void changeWallpaper(String path) {
 
-        System.out.println("Changing wallpaper to: " + path);
+        LOG.info("Changing wallpaper to: " + path + "\n");
         User32.INSTANCE.SystemParametersInfo(0x0014, 0, path, 1);
 
         String mode = this.settingsService.getDesktopMode();
@@ -59,11 +62,7 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
             return;
         }
 
-        // Change to a new wallpaper
-        String keyword = this.settingsService.getRandomKeyword();
-        int index = this.settingsService.getIndexOfKeyword(keyword);
-
-        this.changeToIndex(index + 1, keyword);
+        this.keyword(1);
     }
 
     @Override
@@ -77,11 +76,18 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
             return;
         }
 
+        this.keyword(-1);
+    }
+
+    private void keyword(int offset) {
+
         // Change to a new wallpaper
         String keyword = this.settingsService.getRandomKeyword();
         int index = this.settingsService.getIndexOfKeyword(keyword);
 
-        this.changeToIndex(index - 1, keyword);
+        LOG.info("Selected keyword '" + keyword + "' from active keywords.");
+
+        this.changeToIndex(index + offset, keyword);
     }
 
     private void changeToIndex(int index, String keyword) {
@@ -121,7 +127,7 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
         String path = this.settingsService.getDirectoryPath();
         path += "\\" + keyword;
 
-        System.out.println("Selecting wallpaper from: " + path);
+        LOG.info("Selecting wallpaper from: " + path);
 
         File directory = new File(path);
 
@@ -258,7 +264,7 @@ public class DefaultDesktopService extends AbstractBackgroundService implements 
             Advapi32Util.registrySetStringValue(WinReg.HKEY_CURRENT_USER, "Control Panel\\Desktop", "WallpaperStyle", mode);
             Runtime.getRuntime().exec("RUNDLL32.EXE USER32.DLL,UpdatePerUserSystemParameters 1, True");
         } catch (IOException ex) {
-            System.out.println("Couldn't change picture position.");
+            LOG.info("Couldn't change picture position.");
         }
     }
 }

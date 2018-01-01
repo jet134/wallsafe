@@ -6,12 +6,15 @@ import fi.kennyhei.wallsafe.security.Security;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.apache.log4j.Logger;
 
 import org.jsoup.Connection;
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
 
 public class DefaultLoginService implements LoginService {
+
+    private static final Logger LOG = Logger.getLogger(DefaultLoginService.class);
 
     // LoginService is a singleton class
     private static DefaultLoginService instance = null;
@@ -43,10 +46,10 @@ public class DefaultLoginService implements LoginService {
     @Override
     public boolean login() throws Exception {
 
-        System.out.println("Logging in WallHaven...");
+        LOG.info("Logging in WallHaven...");
 
         if (!this.hasCredentials()) {
-            System.out.println("Logging cancelled, user has not provided credentials.\n");
+            LOG.info("Logging cancelled, user has not provided credentials.\n");
             return false;
         }
 
@@ -64,7 +67,7 @@ public class DefaultLoginService implements LoginService {
 
         if (response.statusCode() == 200) {
 
-            System.out.println("Logged in successfully.\n");
+            LOG.info("Logged in successfully.\n");
 
             // This is the real deal
             this.cookies = response.cookies();

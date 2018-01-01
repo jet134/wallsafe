@@ -12,7 +12,7 @@ public interface SettingsService {
     public String getResolution();
     public void setResolution(String resolution);
 
-    public void addKeyword(String keyword);
+    public boolean addKeyword(String keyword);
     public void removeKeyword(String keyword);
 
     public List<String> getPlainKeywords();

@@ -13,8 +13,11 @@ import javax.crypto.spec.PBEKeySpec;
 import javax.crypto.spec.PBEParameterSpec;
 
 import org.apache.commons.codec.binary.Base64;
+import org.apache.log4j.Logger;
 
 public class Security {
+
+    private static final Logger LOG = Logger.getLogger(Security.class);
 
     // Ciphering (encryption and decryption) password/key.
     private static final char[] PASSWORD = "Unauthorized_Personel_Is_Unauthorized".toCharArray();
@@ -122,7 +125,7 @@ public class Security {
             sb = new StringBuilder(sb.toString().trim());
         }
 
-        System.out.println("DATA AFTER ENCRYPTION: " + sb.toString());
+        LOG.info("DATA AFTER ENCRYPTION: " + sb.toString());
 
         return sb.toString();
     }
@@ -133,7 +136,7 @@ public class Security {
 
         // Decrypt first layer. (REMEMBER: Layers are in reverse order from writing).
         String decryptedContent = decrypt(data);
-        System.out.println("\nREAD: [first layer decrypted]\n" + decryptedContent + "\n");
+        LOG.info("\nREAD: [first layer decrypted]\n" + decryptedContent + "\n");
 
         // Decrypt second layer (secure data).
         for (String line : decryptedContent.split("\n")) {

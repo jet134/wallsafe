@@ -18,9 +18,12 @@ import java.util.Map;
 import javafx.application.Platform;
 import javafx.stage.Stage;
 import javax.imageio.ImageIO;
+import org.apache.log4j.Logger;
 
 /* Create system tray UI here and logic is in the TrayController */
 public class WSSystemTray {
+
+    private static final Logger LOG = Logger.getLogger(WSSystemTray.class);
 
     private TrayController trayController;
 
@@ -57,18 +60,15 @@ public class WSSystemTray {
             // App requires system tray support, just exit if there is no support
             if (!SystemTray.isSupported()) {
 
-                System.out.println("No system tray support, application exiting.");
+                LOG.info("No system tray support, application exiting.");
                 Platform.exit();
             }
 
             // Set up a system tray icon
             tray = SystemTray.getSystemTray();
 
-            //URL imageUrl = new URL(App.ICON_LOCATION);
-//            Image image = ImageIO.read(imageUrl);
-URL imageUrl = ClassLoader.getSystemClassLoader().getResource(App.ICON_LOCATION);
-Image image = ImageIO.read(imageUrl);
-//Image image = ImageIO.read(ClassLoader.getSystemResourceAsStream(App.ICON_LOCATION));
+            URL imageUrl = ClassLoader.getSystemClassLoader().getResource(App.ICON_LOCATION);
+            Image image = ImageIO.read(imageUrl);
             trayIcon = new TrayIcon(image);
 
             // Create menu buttons for system tray
@@ -89,7 +89,7 @@ Image image = ImageIO.read(imageUrl);
 
         } catch (AWTException | IOException e) {
 
-            System.out.println("Unable to initialize system tray.");
+            LOG.info("Unable to initialize system tray.");
         }
 
         // Create controller for system tray handling actions

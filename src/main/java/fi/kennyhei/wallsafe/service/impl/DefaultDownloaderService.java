@@ -17,6 +17,7 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClients;
+import org.apache.log4j.Logger;
 
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -25,6 +26,8 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 public class DefaultDownloaderService extends AbstractBackgroundService implements DownloaderService {
+
+    private static final Logger LOG = Logger.getLogger(DefaultDownloaderService.class);
 
     private final LoginService loginService;
 
@@ -51,14 +54,18 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
             @Override
             protected Void call() throws Exception {
 
-                System.out.println(settingsService.url());
+                String downloadUrl = settingsService.url();
+                String query = downloadUrl.substring(downloadUrl.indexOf("?"));
+
+                LOG.info("Starting download process using query:");
+                LOG.info(query);
                 Response response = Jsoup.connect(settingsService.url())
                                          .cookies(loginService.getCookies())
                                          .userAgent(Settings.USER_AGENT)
                                          .timeout(10000)
                                          .execute();
 
-                System.out.println(response.statusCode() + " " + response.statusMessage());
+                LOG.info("Request returned: " + response.statusCode() + " " + response.statusMessage());
                 Document doc = response.parse();
 
                 String url = getRandomImageLink(doc);
@@ -77,25 +84,25 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
     private String getRandomImageLink(Document document) throws IOException {
 
         Elements links = document.select("a.preview");
-        System.out.println(links.size());
+        LOG.info("Found " + links.size() + " images");
 
         Random r = new Random();
 
         Element link = links.get(r.nextInt(links.size()));
 
-        System.out.println(link.attr("abs:href"));
+        LOG.info("Selected image " + link.attr("abs:href"));
         Response response = Jsoup.connect(link.attr("abs:href"))
                                  .cookies(loginService.getCookies())
                                  .userAgent(Settings.USER_AGENT)
                                  .timeout(10000)
                                  .execute();
 
-        System.out.println(response.statusCode() + " " + response.statusMessage());
         document = response.parse();
 
         Element image = document.select("img#wallpaper").first();
         String url = image.attr("abs:src");
-        System.out.println(url);
+
+        LOG.info("Downloading image: " + url);
 
         return url;
     }
@@ -122,8 +129,7 @@ public class DefaultDownloaderService extends AbstractBackgroundService implemen
         createKeywordDirectory(keyword);
         String path = this.settingsService.getDirectoryPath() + "\\" + keyword + "\\" + filename;
 
-        System.out.println(path);
-        System.out.println();
+        LOG.info("Saving file to: " + path + "\n");
 
         File file = new File(path);
 

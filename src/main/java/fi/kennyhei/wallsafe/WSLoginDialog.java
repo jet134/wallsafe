@@ -14,8 +14,11 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.util.Pair;
+import org.apache.log4j.Logger;
 
 public class WSLoginDialog {
+
+    private static final Logger LOG = Logger.getLogger(WSLoginDialog.class);
 
     private static final String TITLE = "Authenticate";
     private static final String HEADER_TEXT = "Login to WallHaven";
@@ -84,7 +87,7 @@ public class WSLoginDialog {
             try {
                 loginService.login();
             } catch (Exception ex) {
-                System.out.println("Couldn't login.");
+                LOG.info("Couldn't login.");
             }
         });
     }

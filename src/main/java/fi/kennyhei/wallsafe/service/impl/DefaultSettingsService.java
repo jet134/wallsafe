@@ -15,8 +15,11 @@ import java.util.Map;
 import java.util.Random;
 import java.util.Set;
 import java.util.prefs.Preferences;
+import org.apache.log4j.Logger;
 
 public class DefaultSettingsService implements SettingsService {
+
+    private static final Logger LOG = Logger.getLogger(DefaultSettingsService.class);
 
     private final Settings settings;
     private final ObjectMapper mapper;
@@ -45,16 +48,19 @@ public class DefaultSettingsService implements SettingsService {
     }
 
     @Override
-    public void addKeyword(String keyword) {
+    public boolean addKeyword(String keyword) {
 
         keyword = Option.WS_KEYWORDS + "." + keyword;
         Map<String, Integer> keywords = settings.getKeywords();
 
         if (!keywords.containsKey(keyword)) {
             keywords.put(keyword, -1);
+            this.updateKeywordsPreference(keywords);
+
+            return true;
         }
 
-        this.updateKeywordsPreference(keywords);
+        return false;
     }
 
     @Override
@@ -211,7 +217,7 @@ public class DefaultSettingsService implements SettingsService {
             this.updatePreference(Option.WS_KEYWORDS, mapAsJson);
 
         } catch (JsonProcessingException ex) {
-            System.out.println("Couldn't serialize to JSON.");
+            LOG.info("Couldn't serialize to JSON.");
         }
     }
 

@@ -31,7 +31,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.stage.DirectoryChooser;
 
+import org.apache.log4j.Logger;
+
 public class MainController implements Initializable {
+
+    private static final Logger LOG = Logger.getLogger(MainController.class);
 
     // Variables annotated with @FXML have their values injected by FXMLLoader
     @FXML private Parent root;
@@ -78,7 +82,7 @@ public class MainController implements Initializable {
         try {
             this.loginService.login();
         } catch (Exception ex) {
-            System.out.println("Couldn't login");
+            LOG.info("Couldn't login");
         }
 
         // Setup interval values
@@ -282,8 +286,11 @@ public class MainController implements Initializable {
         // The Java 8 way to get the response value (with lambda expression).
         result.ifPresent(keyword -> {
 
-            this.settingsService.addKeyword(keyword);
-            this.keywordsListView.getItems().add(keyword);
+            boolean success = this.settingsService.addKeyword(keyword);
+
+            if (success) {
+                this.keywordsListView.getItems().add(keyword);
+            }
         });
     }
 
