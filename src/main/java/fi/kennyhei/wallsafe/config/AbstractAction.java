@@ -2,14 +2,14 @@ package fi.kennyhei.wallsafe.config;
 
 import java.util.prefs.Preferences;
 
-public abstract class Action {
+public abstract class AbstractAction {
 
     protected int intervalValue;
     protected String intervalTimeunit;
     protected boolean isEnabled;
     protected final Preferences preferences;
 
-    public Action(Preferences preferences) {
+    public AbstractAction(Preferences preferences) {
 
         this.preferences = preferences;
     }

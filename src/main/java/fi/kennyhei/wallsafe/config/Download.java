@@ -2,7 +2,7 @@ package fi.kennyhei.wallsafe.config;
 
 import java.util.prefs.Preferences;
 
-public class Download extends Action {
+public class Download extends AbstractAction {
 
     public Download(Preferences preferences) {
 

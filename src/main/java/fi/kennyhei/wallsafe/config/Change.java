@@ -2,7 +2,7 @@ package fi.kennyhei.wallsafe.config;
 
 import java.util.prefs.Preferences;
 
-public class Change extends Action {
+public class Change extends AbstractAction {
 
     public Change(Preferences preferences) {
 
