@@ -14,7 +14,7 @@ import static javafx.application.Application.launch;
 
 public class App extends Application {
 
-    public static final String ICON_LOCATION = "http://icons.iconarchive.com/icons/mcdo-design/aqua-candy/16/Wallpaper-Folder-graphite-icon.png";
+    public static final String ICON_LOCATION = "images/wallsafe-icon-round-16-transparent.png";
     private static WSSystemTray systemTray;
 
     @Override
@@ -36,7 +36,7 @@ public class App extends Application {
 
         stage.setScene(scene);
         stage.setTitle("WallSafe");
-        stage.getIcons().add(new Image(ICON_LOCATION));
+        stage.getIcons().add(new Image(ClassLoader.getSystemResourceAsStream(ICON_LOCATION)));
         stage.show();
     }
 

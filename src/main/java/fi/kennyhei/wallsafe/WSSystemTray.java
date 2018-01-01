@@ -64,8 +64,11 @@ public class WSSystemTray {
             // Set up a system tray icon
             tray = SystemTray.getSystemTray();
 
-            URL imageUrl = new URL(App.ICON_LOCATION);
-            Image image = ImageIO.read(imageUrl);
+            //URL imageUrl = new URL(App.ICON_LOCATION);
+//            Image image = ImageIO.read(imageUrl);
+URL imageUrl = ClassLoader.getSystemClassLoader().getResource(App.ICON_LOCATION);
+Image image = ImageIO.read(imageUrl);
+//Image image = ImageIO.read(ClassLoader.getSystemResourceAsStream(App.ICON_LOCATION));
             trayIcon = new TrayIcon(image);
 
             // Create menu buttons for system tray
